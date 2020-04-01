@@ -8,3 +8,7 @@ This app use the COVID API https://github.com/novelcovid/api which retrieve data
 
 https://www.worldometers.info/coronavirus/ 
 https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
+
+![Global fragment Image](https://imgur.com/BFXI3bc)
+![Country fagment Image](https://imgur.com/UQISQa2)
+![Graphs fragment Image](https://imgur.com/BFXI3bc)
