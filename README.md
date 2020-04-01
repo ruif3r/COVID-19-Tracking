@@ -10,7 +10,7 @@ https://www.worldometers.info/coronavirus/
 https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
 
 
-<img src="https://i.imgur.com/BFXI3bc.jpg" width="480" height="640">
+<img src="https://i.imgur.com/BFXI3bc.jpg" height="640">
 <img src="https://i.imgur.com/UQISQa2.jpg" width="480" height="640">
 <img src="https://i.imgur.com/Be9vVHt.jpg" width="480" height="640">
 
