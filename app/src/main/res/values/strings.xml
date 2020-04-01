@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">COVID-19 Tracking</string>
+    <string name="title_home">Global</string>
+    <string name="title_dashboard">Countries</string>
+    <string name="title_notifications">Graphs</string>
+    <string name="total_cases_title">Total Cases:</string>
+    <string name="deaths_title">Deaths:</string>
+    <string name="recovered_title">Recovered:</string>
+    <string name="last_update_date">Last Update:</string>
+    <string name="search">Search</string>
+    <string name="appbarRefresh">Refresh</string>
+    <string name="appbarAbout">About</string>
+</resources>
