@@ -32,33 +32,25 @@ class NotificationsFragment : Fragment() {
         chart.description.text = "COVID-19 Timeline"
         chart.axisRight.isEnabled = false
         notificationsViewModel.nCoVAllHistoricalData.observe(viewLifecycleOwner, Observer { nCovTimeline ->
-          val lineEntriesCases = ArrayList<Entry>()
-            val lineEntriesDeaths = ArrayList<Entry>()
-            val lineEntriesRecovered = ArrayList<Entry>()
-            var index = 0
-            for (i  in nCovTimeline.cases){
-                lineEntriesCases.add(Entry(index.toFloat(), i.value.toFloat()))
-                index++
-            }
-            index = 0
-            for (i  in  nCovTimeline.deaths){
-                lineEntriesDeaths.add(Entry(index.toFloat(), i.value.toFloat()))
-                index++
-            }
-            index = 0
-            for (i  in  nCovTimeline.recovered){
-                lineEntriesRecovered.add(Entry(index.toFloat(), i.value.toFloat()))
-                index++
-            }
             val allLineData = ArrayList<ILineDataSet>()
-            allLineData.add(defineDataSet(lineEntriesCases, "Global Cases", "#6200EE"))
-            allLineData.add(defineDataSet(lineEntriesDeaths, "Total Deaths", "#B71C1C"))
-            allLineData.add(defineDataSet(lineEntriesRecovered, "Total Recovered", "#4CAF50"))
+            allLineData.add(defineDataSet(addDataToEntriesArrays(nCovTimeline.cases), "Global Cases", "#6200EE"))
+            allLineData.add(defineDataSet(addDataToEntriesArrays(nCovTimeline.deaths), "Total Deaths", "#B71C1C"))
+            allLineData.add(defineDataSet(addDataToEntriesArrays(nCovTimeline.recovered), "Total Recovered", "#4CAF50"))
             val lineData = LineData(allLineData)
             chart.data = lineData
             chart.invalidate()
         })
         return root
+    }
+
+    private fun addDataToEntriesArrays(nCovTimelineData : LinkedHashMap<String, Int>): ArrayList<Entry> {
+        val lineEntries = ArrayList<Entry>()
+        var index = 0
+        for (i  in nCovTimelineData){
+            lineEntries.add(Entry(index.toFloat(), i.value.toFloat()))
+            index++
+        }
+        return lineEntries
     }
 
     private fun defineDataSet(entry: ArrayList<Entry>, label : String, color : String) : LineDataSet{
