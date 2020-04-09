@@ -1,6 +1,5 @@
 package com.example.ncov19traking.ui.home
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -10,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.R
+import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -29,6 +29,9 @@ class HomeFragment : Fragment() {
         val totalCases: TextView = root.findViewById(R.id.total_cases)
         val recovered: TextView = root.findViewById(R.id.recovered_numbers)
         val deaths: TextView = root.findViewById(R.id.deaths_numbers)
+        val casesPercentage: TextView = root.findViewById(R.id.percentageCasesDifference)
+        val recoveredPercentage: TextView = root.findViewById(R.id.percentageRecoveredDifference)
+        val deathsPercentage: TextView = root.findViewById(R.id.percentageDeathsDifference)
         val lastUpdateLong: TextView = root.findViewById(R.id.last_update_date)
         progressBar = root.findViewById(R.id.progressBar)
         progressBar.visibility = ProgressBar.VISIBLE
@@ -37,6 +40,9 @@ class HomeFragment : Fragment() {
             recovered.text = it.recovered.toString()
             deaths.text = it.deaths.toString()
             lastUpdateLong.text = Date(it.updated).toString()
+            casesPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.cases, homeViewModel.nCoVYesterdayAllCases.cases)}% since yesterday"
+            recoveredPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.recovered, homeViewModel.nCoVYesterdayAllCases.recovered)}% since yesterday"
+            deathsPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.deaths, homeViewModel.nCoVYesterdayAllCases.deaths)}% since yesterday"
             progressBar.visibility = ProgressBar.GONE
         })
 
@@ -50,7 +56,6 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.appbar_home_refresh -> {
-                homeViewModel.refreshAllCases()
                 return true
             }
             R.id.appbar_home_about -> {

@@ -11,13 +11,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.home.HomeFragment"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        tools:context=".ui.home.HomeFragment">
 
         <TextView
             android:id="@+id/total_cases"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:textAlignment="center"
             android:textSize="@dimen/home_text_size"
             app:layout_constraintBottom_toTopOf="@+id/recovered_numbers"
@@ -30,6 +31,7 @@
             android:id="@+id/recovered_numbers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:textColor="@color/recoveredColor"
             android:textSize="@dimen/home_text_size"
             app:layout_constraintBottom_toTopOf="@+id/deaths_numbers"
@@ -42,6 +44,7 @@
             android:id="@+id/deaths_numbers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:textColor="@color/deathsColor"
             android:textSize="@dimen/home_text_size"
             app:layout_constraintBottom_toTopOf="@+id/last_update_date"
@@ -76,6 +79,7 @@
             android:id="@+id/recovered2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/recovered_title"
             android:textSize="@dimen/home_text_size"
@@ -89,6 +93,7 @@
             android:id="@+id/deaths_cases_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/deaths_title"
             android:textSize="@dimen/home_text_size"
@@ -102,6 +107,7 @@
             android:id="@+id/total_cases_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/total_cases_title"
             android:textSize="@dimen/home_text_size"
@@ -131,5 +137,35 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/title" />
+
+        <TextView
+            android:id="@+id/percentageCasesDifference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/total_cases"
+            app:layout_constraintStart_toStartOf="@+id/total_cases"
+            app:layout_constraintTop_toBottomOf="@+id/total_cases" />
+
+        <TextView
+            android:id="@+id/percentageRecoveredDifference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/recovered_numbers"
+            app:layout_constraintStart_toStartOf="@+id/recovered_numbers"
+            app:layout_constraintTop_toBottomOf="@+id/recovered_numbers" />
+
+        <TextView
+            android:id="@+id/percentageDeathsDifference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/deaths_numbers"
+            app:layout_constraintStart_toStartOf="@+id/deaths_numbers"
+            app:layout_constraintTop_toBottomOf="@+id/deaths_numbers" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,8 +1,6 @@
 package com.example.ncov19traking.ui.dashboard
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView

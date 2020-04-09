@@ -4,20 +4,22 @@ import com.example.ncov19traking.models.CountryHistoricalData
 import com.example.ncov19traking.models.NCoVInfo
 import com.example.ncov19traking.models.NumbersByCountry
 import com.example.ncov19traking.models.Timeline
-import retrofit2.Call
 import retrofit2.http.GET
 
 interface NCoVApi {
 
     @GET("all")
-    fun getGeneralNumbers() : Call<NCoVInfo>
+    suspend fun getGeneralNumbers() : NCoVInfo
 
     @GET("countries")
-    fun getNumbersByCountry() : Call<ArrayList<NumbersByCountry>>
+    suspend fun getNumbersByCountry() : ArrayList<NumbersByCountry>
 
     @GET("v2/historical")
-    fun getHistoricalDataByCountry() : Call<ArrayList<CountryHistoricalData>>
+    suspend fun getHistoricalDataByCountry() : ArrayList<CountryHistoricalData>
 
     @GET("v2/historical/all")
-    fun getAllHistoricalData() : Call<Timeline>
+    suspend fun getAllHistoricalData() : Timeline
+
+    @GET("yesterday/all")
+    suspend fun getYesterdayGeneralNumbers() : NCoVInfo
 }

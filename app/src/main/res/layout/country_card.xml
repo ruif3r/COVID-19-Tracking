@@ -174,4 +174,15 @@
         android:textColor="@color/criticalColor"
         app:layout_constraintStart_toEndOf="@+id/critical_cases_title"
         app:layout_constraintTop_toBottomOf="@+id/today_deaths_numbers" />
+
+    <ImageView
+        android:id="@+id/countryFlagImgeView"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@+id/countryName"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@color/colorAccent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

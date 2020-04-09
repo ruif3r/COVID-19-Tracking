@@ -1,17 +1,15 @@
 package com.example.ncov19traking.data
 import com.example.ncov19traking.api.NCoVApiAdapter
-import com.example.ncov19traking.models.CountryHistoricalData
-import com.example.ncov19traking.models.NCoVInfo
-import com.example.ncov19traking.models.NumbersByCountry
-import com.example.ncov19traking.models.Timeline
 
 class NCoVRepository {
 
-    fun getAllCases() = NetworkCall<NCoVInfo>().makeCall(NCoVApiAdapter.nCoVApi.getGeneralNumbers())
+    suspend fun getAllCases() = NCoVApiAdapter.nCoVApi.getGeneralNumbers()
 
-    fun getAllCountries() = NetworkCall<ArrayList<NumbersByCountry>>().makeCall(NCoVApiAdapter.nCoVApi.getNumbersByCountry())
+    suspend fun getAllYesterdayCases() = NCoVApiAdapter.nCoVApi.getYesterdayGeneralNumbers()
 
-    fun getHistoricalCountryData() = NetworkCall<ArrayList<CountryHistoricalData>>().makeCall(NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry())
+    suspend fun getAllCountries() = NCoVApiAdapter.nCoVApi.getNumbersByCountry()
 
-    fun getAllHistoricalDataCases() = NetworkCall<Timeline>().makeCall(NCoVApiAdapter.nCoVApi.getAllHistoricalData())
+    suspend fun getHistoricalCountryData() = NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry()
+
+    suspend fun getAllHistoricalDataCases() = NCoVApiAdapter.nCoVApi.getAllHistoricalData()
 }

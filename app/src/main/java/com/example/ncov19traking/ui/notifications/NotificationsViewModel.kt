@@ -1,15 +1,15 @@
 package com.example.ncov19traking.ui.notifications
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import com.example.ncov19traking.data.NCoVRepository
-import com.example.ncov19traking.models.CountryHistoricalData
+import kotlinx.coroutines.Dispatchers
 
 class NotificationsViewModel : ViewModel() {
 
     private val repo = NCoVRepository()
 
-    val nCoVHistoricalDataByCountry = repo.getHistoricalCountryData()
+    val nCoVHistoricalDataByCountry = liveData(Dispatchers.IO) {emit(repo.getHistoricalCountryData())}
 
-    val nCoVAllHistoricalData = repo.getAllHistoricalDataCases()
+    val nCoVAllHistoricalData = liveData {emit(repo.getAllHistoricalDataCases())}
 }
