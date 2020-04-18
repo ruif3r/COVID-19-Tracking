@@ -11,9 +11,7 @@ interface CountryDao {
     @Insert(onConflict = REPLACE)
     fun save(numbersByCountry : Array<NumbersByCountry>)
 
-    @Query("SELECT * FROM NumbersByCountry")
+    @Query("SELECT * FROM NumbersByCountry WHEN yes")
     fun load(): Array<NumbersByCountry>
 
-    @Query("DELETE FROM NumbersByCountry")
-    fun delete()
 }
