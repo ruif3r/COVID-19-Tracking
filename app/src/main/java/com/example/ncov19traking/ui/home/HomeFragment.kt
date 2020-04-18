@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.R
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.*
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
 class HomeFragment : Fragment() {
 
@@ -40,9 +42,9 @@ class HomeFragment : Fragment() {
             recovered.text = it.recovered.toString()
             deaths.text = it.deaths.toString()
             lastUpdateLong.text = Date(it.updated).toString()
-            casesPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.cases, homeViewModel.nCoVYesterdayAllCases.cases)}% since yesterday"
-            recoveredPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.recovered, homeViewModel.nCoVYesterdayAllCases.recovered)}% since yesterday"
-            deathsPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.deaths, homeViewModel.nCoVYesterdayAllCases.deaths)}% since yesterday"
+                casesPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.cases, homeViewModel.nCoVYesterdayAllCases.cases)}% since yesterday"
+                recoveredPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.recovered, homeViewModel.nCoVYesterdayAllCases.recovered)}% since yesterday"
+                deathsPercentage.text = "+${homeViewModel.getCasesPercentageDifference(it.deaths, homeViewModel.nCoVYesterdayAllCases.deaths)}% since yesterday"
             progressBar.visibility = ProgressBar.GONE
         })
 
@@ -56,6 +58,7 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.appbar_home_refresh -> {
+                homeViewModel.deleteAll()
                 return true
             }
             R.id.appbar_home_about -> {

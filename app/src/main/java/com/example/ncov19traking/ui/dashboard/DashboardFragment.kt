@@ -35,7 +35,7 @@ class DashboardFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         dashboardViewModel.nCoVCasesByCountry.observe(viewLifecycleOwner, Observer {
-            nCoVRecyclerAdapter.addToListCountries(it as ArrayList)
+            nCoVRecyclerAdapter.addToListCountries(it as Array)
             progressBarCountry.visibility = ProgressBar.GONE
         })
 
