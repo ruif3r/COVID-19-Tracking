@@ -14,7 +14,7 @@ import com.example.ncov19traking.models.NumbersByCountry
 import com.example.ncov19traking.models.Timeline
 
 @Database(
-    entities = [NCoVInfo::class, NumbersByCountry::class, Timeline::class],
+    entities = [NCoVInfo::class, NCoVInfoYesterday::class, NumbersByCountry::class, Timeline::class],
     version = 2,
     exportSchema = false
 )
