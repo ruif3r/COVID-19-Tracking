@@ -14,4 +14,7 @@ interface GlobalHistoricalDao {
 
     @Query("SELECT * FROM Timeline")
     fun load(): Timeline
+
+    @Query("SELECT COUNT(*) FROM Timeline")
+    fun getTimelineCount(): Int
 }

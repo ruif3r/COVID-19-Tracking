@@ -1,4 +1,4 @@
-package com.example.ncov19traking.ui.home
+package com.example.ncov19traking.ui.global
 
 import android.os.Bundle
 import android.view.*
@@ -9,15 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.R
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.*
 import java.util.*
-import kotlin.coroutines.coroutineContext
 
-class HomeFragment : Fragment() {
+class GlobalFragment : Fragment() {
 
     private val homeViewModel by lazy {
-        ViewModelProvider(this).get(HomeViewModel::class.java)
+        ViewModelProvider(this).get(GlobalViewModel::class.java)
     }
     private lateinit var progressBar : ProgressBar
 

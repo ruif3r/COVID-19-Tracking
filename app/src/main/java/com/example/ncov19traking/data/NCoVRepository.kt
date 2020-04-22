@@ -18,7 +18,9 @@ class NCoVRepository(context: Context) {
             refreshAllCases()
             nCoVDao.load()
         } catch (e: Exception) {
-            nCoVDao.load()
+            if (nCoVDao.getCount() != 0)
+                nCoVDao.load()
+            else NCoVInfo(0, 0, 0, 0)
         }
     }
 
@@ -35,7 +37,10 @@ class NCoVRepository(context: Context) {
             refreshAllYesterdayCases()
             nCoVDao.loadYesterday()
         } catch (e: Exception) {
-            nCoVDao.loadYesterday()
+            if (nCoVDao.getCount() != 0)
+                nCoVDao.loadYesterday()
+            else
+                NCoVInfoYesterday(0, 0, 0, 0)
         }
     }
 
@@ -43,31 +48,35 @@ class NCoVRepository(context: Context) {
         nCoVDao.saveYesterday(NCoVApiAdapter.nCoVApi.getYesterdayGeneralNumbers())
     }
 
-    suspend fun getAllCountries() : Array<NumbersByCountry>{
+    suspend fun getAllCountries(): Array<NumbersByCountry>? {
         return try {
             refreshAllCountries()
             countryDao.load()
         } catch (e: Exception){
-            countryDao.load()
+            if (countryDao.getCountryCount() != 0)
+                countryDao.load()
+            else emptyArray()
         }
     }
 
-    suspend fun refreshAllCountries(){
+    private suspend fun refreshAllCountries() {
         countryDao.save(NCoVApiAdapter.nCoVApi.getNumbersByCountry())
     }
 
     suspend fun getHistoricalCountryData() = NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry()
 
-    suspend fun getAllHistoricalDataCases() : Timeline {
+    suspend fun getAllHistoricalDataCases(): Timeline? {
         return try {
             refreshAllHistoricalDataCases()
             globalHistoricalDao.load()
         }catch (e : Exception){
-            globalHistoricalDao.load()
+            if (globalHistoricalDao.getTimelineCount() != 0)
+                globalHistoricalDao.load()
+            else null
         }
     }
 
-    suspend fun refreshAllHistoricalDataCases(){
+    private suspend fun refreshAllHistoricalDataCases() {
         globalHistoricalDao.save(NCoVApiAdapter.nCoVApi.getAllHistoricalData())
     }
 }

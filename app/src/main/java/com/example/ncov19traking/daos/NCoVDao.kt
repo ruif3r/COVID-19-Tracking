@@ -1,4 +1,4 @@
-package com.example.ncov19traking.data
+package com.example.ncov19traking.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -14,6 +14,9 @@ interface NCoVDao {
 
     @Query("SELECT * FROM nCoVInfo")
     fun load(): NCoVInfo
+
+    @Query("SELECT COUNT(*) FROM NCoVInfo")
+    fun getCount(): Int
 
     @Query("DELETE FROM nCoVInfo")
     fun delete()

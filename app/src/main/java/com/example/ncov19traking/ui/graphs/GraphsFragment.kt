@@ -1,4 +1,4 @@
-package com.example.ncov19traking.ui.notifications
+package com.example.ncov19traking.ui.graphs
 
 import android.graphics.Color
 import android.os.Bundle
@@ -10,15 +10,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.R
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
-class NotificationsFragment : Fragment() {
+class GraphsFragment : Fragment() {
 
     private val notificationsViewModel by lazy {
-        ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        ViewModelProvider(this).get(GraphsViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -31,11 +32,35 @@ class NotificationsFragment : Fragment() {
         chart.animateX(2000)
         chart.description.text = "COVID-19 Timeline"
         chart.axisRight.isEnabled = false
+        chart.axisLeft.textColor = Color.parseColor("#9E9E9E")
+        chart.xAxis.textColor = Color.parseColor("#9E9E9E")
+        chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        chart.setMaxVisibleValueCount(30)
         notificationsViewModel.nCoVAllHistoricalData.observe(viewLifecycleOwner, Observer { nCovTimeline ->
             val allLineData = ArrayList<ILineDataSet>()
-            allLineData.add(defineDataSet(addDataToEntriesArrays(nCovTimeline.cases), "Global Cases", "#6200EE"))
-            allLineData.add(defineDataSet(addDataToEntriesArrays(nCovTimeline.deaths), "Total Deaths", "#B71C1C"))
-            allLineData.add(defineDataSet(addDataToEntriesArrays(nCovTimeline.recovered), "Total Recovered", "#4CAF50"))
+            if (nCovTimeline != null) {
+                allLineData.add(
+                    defineDataSet(
+                        addDataToEntriesArrays(nCovTimeline.cases),
+                        "Global Cases",
+                        "#6200EE"
+                    )
+                )
+                allLineData.add(
+                    defineDataSet(
+                        addDataToEntriesArrays(nCovTimeline.deaths),
+                        "Total Deaths",
+                        "#B71C1C"
+                    )
+                )
+                allLineData.add(
+                    defineDataSet(
+                        addDataToEntriesArrays(nCovTimeline.recovered),
+                        "Total Recovered",
+                        "#4CAF50"
+                    )
+                )
+            }
             val lineData = LineData(allLineData)
             chart.data = lineData
             chart.invalidate()
