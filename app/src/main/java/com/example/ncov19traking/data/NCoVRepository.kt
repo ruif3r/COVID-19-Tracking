@@ -1,13 +1,17 @@
 package com.example.ncov19traking.data
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import com.example.ncov19traking.api.NCoVApiAdapter
 import com.example.ncov19traking.models.NCoVInfo
 import com.example.ncov19traking.models.NCoVInfoYesterday
 import com.example.ncov19traking.models.NumbersByCountry
 import com.example.ncov19traking.models.Timeline
+import retrofit2.HttpException
+import java.io.IOException
 
-class NCoVRepository(context: Context) {
+class NCoVRepository(private val context: Context) {
 
     private val nCoVDao = NCoVDataBase.getDataBase(context).nCoVDao()
     private val countryDao = NCoVDataBase.getDataBase(context).countryDao()
@@ -17,7 +21,14 @@ class NCoVRepository(context: Context) {
         return try {
             refreshAllCases()
             nCoVDao.load()
-        } catch (e: Exception) {
+        } catch (e: IOException) {
+            when (e) {
+                is HttpException -> Toast.makeText(
+                    context,
+                    "${e.code()}: ${e.message()}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
             if (nCoVDao.getCount() != 0)
                 nCoVDao.load()
             else NCoVInfo(0, 0, 0, 0)
@@ -25,7 +36,9 @@ class NCoVRepository(context: Context) {
     }
 
     private suspend fun refreshAllCases() {
-        nCoVDao.save(NCoVApiAdapter.nCoVApi.getGeneralNumbers())
+        if (NCoVApiAdapter.nCoVApi.getGeneralNumbers().isSuccessful) {
+            NCoVApiAdapter.nCoVApi.getGeneralNumbers().body()?.let { nCoVDao.save(it) }
+        }
     }
 
     fun deleteAllCases() {
@@ -52,7 +65,8 @@ class NCoVRepository(context: Context) {
         return try {
             refreshAllCountries()
             countryDao.load()
-        } catch (e: Exception){
+        } catch (e: IOException) {
+            Log.d("debug", "${e.cause}: ${e.message}")
             if (countryDao.getCountryCount() != 0)
                 countryDao.load()
             else emptyArray()
@@ -61,6 +75,7 @@ class NCoVRepository(context: Context) {
 
     private suspend fun refreshAllCountries() {
         countryDao.save(NCoVApiAdapter.nCoVApi.getNumbersByCountry())
+
     }
 
     suspend fun getHistoricalCountryData() = NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry()
