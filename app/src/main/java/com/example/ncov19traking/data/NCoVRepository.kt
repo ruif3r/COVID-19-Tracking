@@ -3,12 +3,13 @@ package com.example.ncov19traking.data
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import com.example.ncov19traking.api.NCoVApiAdapter
+import com.example.ncov19traking.api.*
 import com.example.ncov19traking.models.NCoVInfo
 import com.example.ncov19traking.models.NCoVInfoYesterday
 import com.example.ncov19traking.models.NumbersByCountry
 import com.example.ncov19traking.models.Timeline
-import retrofit2.HttpException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class NCoVRepository(private val context: Context) {
@@ -19,25 +20,28 @@ class NCoVRepository(private val context: Context) {
 
     suspend fun getAllCases(): NCoVInfo {
         return try {
-            refreshAllCases()
-            nCoVDao.load()
-        } catch (e: IOException) {
-            when (e) {
-                is HttpException -> Toast.makeText(
-                    context,
-                    "${e.code()}: ${e.message()}",
-                    Toast.LENGTH_LONG
-                ).show()
+            when (val response = ApiResponse.create(NCoVApiAdapter.nCoVApi.getGeneralNumbers())) {
+                is ApiSuccessResponse -> {
+                    nCoVDao.save(response.data)
+                    nCoVDao.load()
+                }
+                is ApiSuccessEmptyResponse -> nCoVDao.load()
+                is ApiErrorResponse -> {
+                    Log.d("apiError", "${response.code}: ${response.message}")
+                    withContext(Dispatchers.Main) {
+                        notifyError(response.message, response.code)
+                    }
+                    nCoVDao.load()
+                }
             }
-            if (nCoVDao.getCount() != 0)
+        } catch (e: IOException) {
+            if (nCoVDao.getCount() != 0) {
+                withContext(Dispatchers.Main) {
+                    notifyError(e.message, null)
+                }
                 nCoVDao.load()
+            }
             else NCoVInfo(0, 0, 0, 0)
-        }
-    }
-
-    private suspend fun refreshAllCases() {
-        if (NCoVApiAdapter.nCoVApi.getGeneralNumbers().isSuccessful) {
-            NCoVApiAdapter.nCoVApi.getGeneralNumbers().body()?.let { nCoVDao.save(it) }
         }
     }
 
@@ -47,51 +51,86 @@ class NCoVRepository(private val context: Context) {
 
     suspend fun getAllYesterdayCases(): NCoVInfoYesterday {
         return try {
-            refreshAllYesterdayCases()
-            nCoVDao.loadYesterday()
-        } catch (e: Exception) {
+            when (val response =
+                ApiResponse.create(NCoVApiAdapter.nCoVApi.getYesterdayGeneralNumbers())) {
+                is ApiSuccessResponse -> {
+                    nCoVDao.saveYesterday(response.data)
+                    nCoVDao.loadYesterday()
+                }
+                is ApiSuccessEmptyResponse -> nCoVDao.loadYesterday()
+                is ApiErrorResponse -> {
+                    Log.d("apiError", "${response.code}: ${response.message}")
+                    nCoVDao.loadYesterday()
+                }
+            }
+        } catch (e: IOException) {
             if (nCoVDao.getCount() != 0)
                 nCoVDao.loadYesterday()
-            else
-                NCoVInfoYesterday(0, 0, 0, 0)
+            else NCoVInfoYesterday(0, 0, 0, 0)
         }
-    }
-
-    private suspend fun refreshAllYesterdayCases() {
-        nCoVDao.saveYesterday(NCoVApiAdapter.nCoVApi.getYesterdayGeneralNumbers())
     }
 
     suspend fun getAllCountries(): Array<NumbersByCountry>? {
         return try {
-            refreshAllCountries()
-            countryDao.load()
+            when (val response = ApiResponse.create(NCoVApiAdapter.nCoVApi.getNumbersByCountry())) {
+                is ApiSuccessResponse -> {
+                    countryDao.save(response.data)
+                    countryDao.load()
+                }
+                is ApiSuccessEmptyResponse -> countryDao.load()
+                is ApiErrorResponse -> {
+                    Log.d("apiError", "${response.code}: ${response.message}")
+                    withContext(Dispatchers.Main) {
+                        notifyError(response.message, response.code)
+                    }
+                    countryDao.load()
+                }
+            }
         } catch (e: IOException) {
-            Log.d("debug", "${e.cause}: ${e.message}")
-            if (countryDao.getCountryCount() != 0)
+            if (countryDao.getCountryCount() != 0) {
+                withContext(Dispatchers.Main) {
+                    notifyError(e.message, null)
+                }
                 countryDao.load()
+            }
             else emptyArray()
         }
-    }
-
-    private suspend fun refreshAllCountries() {
-        countryDao.save(NCoVApiAdapter.nCoVApi.getNumbersByCountry())
-
     }
 
     suspend fun getHistoricalCountryData() = NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry()
 
     suspend fun getAllHistoricalDataCases(): Timeline? {
         return try {
-            refreshAllHistoricalDataCases()
-            globalHistoricalDao.load()
-        }catch (e : Exception){
-            if (globalHistoricalDao.getTimelineCount() != 0)
+            when (val response =
+                ApiResponse.create(NCoVApiAdapter.nCoVApi.getAllHistoricalData())) {
+                is ApiSuccessResponse -> {
+                    globalHistoricalDao.save(response.data)
+                    globalHistoricalDao.load()
+                }
+                is ApiSuccessEmptyResponse -> globalHistoricalDao.load()
+                is ApiErrorResponse -> {
+                    Log.d("apiError", "${response.code}: ${response.message}")
+                    withContext(Dispatchers.Main) {
+                        notifyError(response.message, response.code)
+                    }
+                    globalHistoricalDao.load()
+                }
+            }
+        } catch (e: IOException) {
+            if (globalHistoricalDao.getTimelineCount() != 0) {
+                withContext(Dispatchers.Main) {
+                    notifyError(e.message, null)
+                }
                 globalHistoricalDao.load()
+            }
             else null
         }
     }
 
-    private suspend fun refreshAllHistoricalDataCases() {
-        globalHistoricalDao.save(NCoVApiAdapter.nCoVApi.getAllHistoricalData())
+    private fun notifyError(errorMessage: String?, errorCode: Int?) {
+        if (errorCode != null)
+            Toast.makeText(context, "$errorCode: $errorMessage", Toast.LENGTH_LONG).show()
+        else
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
     }
 }

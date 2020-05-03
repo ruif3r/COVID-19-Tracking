@@ -10,14 +10,14 @@ interface NCoVApi {
     suspend fun getGeneralNumbers(): Response<NCoVInfo>
 
     @GET("v2/countries")
-    suspend fun getNumbersByCountry() : Array<NumbersByCountry>
+    suspend fun getNumbersByCountry(): Response<Array<NumbersByCountry>>
 
     @GET("v2/historical")
     suspend fun getHistoricalDataByCountry() : ArrayList<CountryHistoricalData>
 
     @GET("v2/historical/all")
-    suspend fun getAllHistoricalData() : Timeline
+    suspend fun getAllHistoricalData(): Response<Timeline>
 
     @GET("v2/all?yesterday=true")
-    suspend fun getYesterdayGeneralNumbers() : NCoVInfoYesterday
+    suspend fun getYesterdayGeneralNumbers(): Response<NCoVInfoYesterday>
 }
