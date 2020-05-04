@@ -19,6 +19,7 @@ class CountriesFragment : Fragment() {
         ViewModelProvider(this).get(CountriesViewModel::class.java)
     }
     private val nCoVRecyclerAdapter = NCoVRecyclerAdapter()
+    private var isSortedByCases = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +32,7 @@ class CountriesFragment : Fragment() {
         val recyclerView = root.findViewById<RecyclerView>(R.id.country_recyclerView)
         val progressBarCountry = root.findViewById<ProgressBar>(R.id.progressBarCountryList)
         progressBarCountry.visibility = ProgressBar.VISIBLE
+        nCoVRecyclerAdapter.setHasStableIds(true)
         recyclerView.adapter = nCoVRecyclerAdapter
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
@@ -64,6 +66,15 @@ class CountriesFragment : Fragment() {
             R.id.appbar_refresh -> {
                 dashboardViewModel.refreshCountryList()
                 return true
+            }
+            R.id.appbar_sort -> {
+                if (isSortedByCases) {
+                    isSortedByCases = false
+                    nCoVRecyclerAdapter.changeSort(isSortedByCases)
+                } else {
+                    isSortedByCases = true
+                    nCoVRecyclerAdapter.changeSort(isSortedByCases)
+                }
             }
             R.id.appbar_about -> {
                 val aboutDialog = AlertDialogBuilder()

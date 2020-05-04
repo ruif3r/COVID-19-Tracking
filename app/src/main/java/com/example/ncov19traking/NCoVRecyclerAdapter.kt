@@ -18,10 +18,13 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
     private val dataset = ArrayList<NumbersByCountry>()
     private var datasetForSearch = dataset
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.country_card, parent, false)
         return ViewHolder(view)
     }
+
+    override fun getItemId(position: Int): Long = dataset[position].hashCode().toLong()
 
     override fun getItemCount() = dataset.size
 
@@ -30,8 +33,10 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
         Picasso.get().load(nCoVInfo.countryInfo.flag).into(holder.flag)
         holder.countryName.text = nCoVInfo.country
         holder.totalCases.text = nCoVInfo.cases.toString()
-        holder.recovered.text = "${nCoVInfo.recovered} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.recovered)}%)"
-        holder.deaths.text = "${nCoVInfo.deaths} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.deaths)}%)"
+        holder.recovered.text =
+            "${nCoVInfo.recovered} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.recovered)}%)"
+        holder.deaths.text =
+            "${nCoVInfo.deaths} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.deaths)}%)"
         holder.active.text = nCoVInfo.active.toString()
         holder.todayCases.text = nCoVInfo.todayCases.toString()
         holder.todayDeaths.text = nCoVInfo.todayDeaths.toString()
@@ -42,6 +47,7 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
     fun addToListCountries(countryList: Array<NumbersByCountry>?) {
         if (countryList != null) {
             dataset.addAll(countryList)
+            sortByActiveCases()
             datasetForSearch = ArrayList(dataset)
             notifyDataSetChanged()
         }
@@ -61,22 +67,22 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
 
     override fun getFilter() = countryFilter
 
-    private var countryFilter = object : Filter(){
+    private var countryFilter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             var filteredList = ArrayList<NumbersByCountry>()
-            if (constraint.isNullOrEmpty()){
+            if (constraint.isNullOrEmpty()) {
                 filteredList = datasetForSearch
-            }else {
+            } else {
                 val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim()
 
-                for (item in datasetForSearch){
-                    if (item.country.toLowerCase(Locale.ROOT).contains(filterPattern)){
+                for (item in datasetForSearch) {
+                    if (item.country.toLowerCase(Locale.ROOT).contains(filterPattern)) {
                         filteredList.add(item)
                     }
                 }
             }
             val result = FilterResults()
-            result.values=filteredList
+            result.values = filteredList
             return result
         }
 
@@ -88,9 +94,28 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
 
     }
 
-    fun calculatePercentage(universeNumber : Int, fieldNumber : Int) : String{
-       return fieldNumber.times(100).div(universeNumber.toFloat()).format(2)
+    private fun calculatePercentage(universeNumber: Int, fieldNumber: Int): String {
+        return fieldNumber.times(100).div(universeNumber.toFloat()).format(2)
     }
 
     fun Float.format(digits: Int) = "%.${digits}f".format(this)
+
+    private fun sortByActiveCases() {
+        dataset.sortByDescending { it.active }
+    }
+
+    private fun sortAlphabetically() {
+        dataset.sortBy { it.country }
+    }
+
+    fun changeSort(isSortedByCases: Boolean) {
+        if (isSortedByCases) {
+            sortByActiveCases()
+            notifyDataSetChanged()
+        } else {
+            sortAlphabetically()
+            notifyDataSetChanged()
+        }
+
+    }
 }

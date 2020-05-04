@@ -28,7 +28,11 @@ data class NumbersByCountry(
     @PrimaryKey var country: String,
     var cases: Int, var todayCases: Int, var deaths: Int, var todayDeaths: Int,
     var recovered: Int, var active: Int, var critical: Int, @Embedded var countryInfo: CountryInfo
-)
+) {
+    override fun hashCode(): Int {
+        return 3 * country.hashCode()
+    }
+}
 
 data class CountryHistoricalData(var country: String, var timeline: Timeline)
 

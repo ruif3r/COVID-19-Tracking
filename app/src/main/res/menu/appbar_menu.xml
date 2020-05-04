@@ -12,6 +12,12 @@
         android:title="@string/appbarRefresh"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/appbar_sort"
+        android:title="@string/Sort"
+        android:icon="@drawable/ic_sort_black_24dp"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/appbar_about"
         android:title="@string/appbarAbout"
         app:showAsAction="never"/>
