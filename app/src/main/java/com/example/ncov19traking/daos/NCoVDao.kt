@@ -1,4 +1,4 @@
-package com.example.ncov19traking.data
+package com.example.ncov19traking.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -13,7 +13,7 @@ interface NCoVDao {
     fun save(nCoVInfo: NCoVInfo)
 
     @Query("SELECT * FROM nCoVInfo")
-    fun load(): NCoVInfo
+    fun load(): Array<NCoVInfo>
 
     @Query("DELETE FROM nCoVInfo")
     fun delete()
@@ -22,5 +22,5 @@ interface NCoVDao {
     fun saveYesterday(nCovInfoYesterday : NCoVInfoYesterday)
 
     @Query("SELECT * FROM nCovInfoYesterday")
-    fun loadYesterday():NCoVInfoYesterday
+    fun loadYesterday(): Array<NCoVInfoYesterday>
 }

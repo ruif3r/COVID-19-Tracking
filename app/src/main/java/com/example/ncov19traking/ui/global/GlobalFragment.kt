@@ -1,5 +1,6 @@
-package com.example.ncov19traking.ui.home
+package com.example.ncov19traking.ui.global
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -8,16 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
+import com.example.ncov19traking.NcoVSystemService
 import com.example.ncov19traking.R
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.*
 import java.util.*
-import kotlin.coroutines.coroutineContext
 
-class HomeFragment : Fragment() {
+class GlobalFragment : Fragment() {
 
     private val homeViewModel by lazy {
-        ViewModelProvider(this).get(HomeViewModel::class.java)
+        ViewModelProvider(this).get(GlobalViewModel::class.java)
     }
     private lateinit var progressBar : ProgressBar
 
@@ -48,7 +47,14 @@ class HomeFragment : Fragment() {
             progressBar.visibility = ProgressBar.GONE
         })
 
+        startForegroundService()
+
         return root
+    }
+
+    fun startForegroundService() {
+        val intent = Intent(context, NcoVSystemService::class.java)
+        activity?.startService(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

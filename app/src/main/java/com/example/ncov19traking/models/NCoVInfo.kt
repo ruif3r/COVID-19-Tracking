@@ -11,16 +11,16 @@ data class NCoVInfo(
     var deaths: Int,
     var recovered: Int,
     var updated: Long,
-    @PrimaryKey @ColumnInfo(defaultValue = "current") val from: String
+    @PrimaryKey @ColumnInfo(defaultValue = "current") val from: String = "current"
 )
 
 @Entity
 data class NCoVInfoYesterday(
-    @PrimaryKey @ColumnInfo(defaultValue = "yesterday") val from: String,
     var cases: Int,
     var deaths: Int,
     var recovered: Int,
-    var updated: Long
+    var updated: Long,
+    @PrimaryKey @ColumnInfo(defaultValue = "yesterday") val from: String = "yesterday"
 )
 
 @Entity

@@ -1,13 +1,15 @@
 package com.example.ncov19traking.data
 
 import android.content.Context
+import android.util.Log
 import com.example.ncov19traking.api.NCoVApiAdapter
 import com.example.ncov19traking.models.NCoVInfo
 import com.example.ncov19traking.models.NCoVInfoYesterday
 import com.example.ncov19traking.models.NumbersByCountry
 import com.example.ncov19traking.models.Timeline
+import java.io.IOException
 
-class NCoVRepository(context: Context) {
+class NCoVRepository(private val context: Context) {
 
     private val nCoVDao = NCoVDataBase.getDataBase(context).nCoVDao()
     private val countryDao = NCoVDataBase.getDataBase(context).countryDao()
@@ -16,14 +18,16 @@ class NCoVRepository(context: Context) {
     suspend fun getAllCases(): NCoVInfo {
         return try {
             refreshAllCases()
-            nCoVDao.load()
-        } catch (e: Exception) {
-            nCoVDao.load()
+            nCoVDao.load().first()
+        } catch (e: IOException) {
+            if (nCoVDao.load().size != 0)
+                nCoVDao.load().first()
+            else NCoVInfo(0, 0, 0, 0)
         }
     }
 
     private suspend fun refreshAllCases() {
-        nCoVDao.save(NCoVApiAdapter.nCoVApi.getGeneralNumbers())
+            NCoVApiAdapter.nCoVApi.getGeneralNumbers().body()?.let { nCoVDao.save(it) }
     }
 
     fun deleteAllCases() {
@@ -33,9 +37,12 @@ class NCoVRepository(context: Context) {
     suspend fun getAllYesterdayCases(): NCoVInfoYesterday {
         return try {
             refreshAllYesterdayCases()
-            nCoVDao.loadYesterday()
+            nCoVDao.loadYesterday().first()
         } catch (e: Exception) {
-            nCoVDao.loadYesterday()
+            if (nCoVDao.loadYesterday().size != 0)
+                nCoVDao.loadYesterday().first()
+            else
+                NCoVInfoYesterday(0, 0, 0, 0)
         }
     }
 
@@ -43,31 +50,37 @@ class NCoVRepository(context: Context) {
         nCoVDao.saveYesterday(NCoVApiAdapter.nCoVApi.getYesterdayGeneralNumbers())
     }
 
-    suspend fun getAllCountries() : Array<NumbersByCountry>{
+    suspend fun getAllCountries(): Array<NumbersByCountry>? {
         return try {
             refreshAllCountries()
             countryDao.load()
-        } catch (e: Exception){
-            countryDao.load()
+        } catch (e: IOException) {
+            Log.d("debug", "${e.cause}: ${e.message}")
+            if (countryDao.load().isNotEmpty())
+                countryDao.load()
+            else emptyArray()
         }
     }
 
-    suspend fun refreshAllCountries(){
+    private suspend fun refreshAllCountries() {
         countryDao.save(NCoVApiAdapter.nCoVApi.getNumbersByCountry())
+
     }
 
     suspend fun getHistoricalCountryData() = NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry()
 
-    suspend fun getAllHistoricalDataCases() : Timeline {
+    suspend fun getAllHistoricalDataCases(): Timeline? {
         return try {
             refreshAllHistoricalDataCases()
-            globalHistoricalDao.load()
+            globalHistoricalDao.load().first()
         }catch (e : Exception){
-            globalHistoricalDao.load()
+            if (globalHistoricalDao.load().size != 0)
+                globalHistoricalDao.load().first()
+            else null
         }
     }
 
-    suspend fun refreshAllHistoricalDataCases(){
+    private suspend fun refreshAllHistoricalDataCases() {
         globalHistoricalDao.save(NCoVApiAdapter.nCoVApi.getAllHistoricalData())
     }
 }

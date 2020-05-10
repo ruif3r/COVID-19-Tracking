@@ -6,4 +6,5 @@
     <color name="recoveredColor">#4CAF50</color>
     <color name="deathsColor">#B71C1C</color>
     <color name="criticalColor">#FF9800</color>
+    <color name="graphTextColor">#9E9E9E</color>
 </resources>

@@ -1,12 +1,13 @@
 package com.example.ncov19traking.api
 
 import com.example.ncov19traking.models.*
+import retrofit2.Response
 import retrofit2.http.GET
 
 interface NCoVApi {
 
     @GET("v2/all")
-    suspend fun getGeneralNumbers() : NCoVInfo
+    suspend fun getGeneralNumbers(): Response<NCoVInfo>
 
     @GET("v2/countries")
     suspend fun getNumbersByCountry() : Array<NumbersByCountry>

@@ -13,5 +13,5 @@ interface GlobalHistoricalDao {
     fun save(timeline: Timeline)
 
     @Query("SELECT * FROM Timeline")
-    fun load(): Timeline
+    fun load(): Array<Timeline>
 }

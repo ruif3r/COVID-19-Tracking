@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="?android:attr/actionBarSize"
-    tools:context=".ui.notifications.NotificationsFragment">
+    tools:context=".ui.graphs.GraphsFragment">
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"

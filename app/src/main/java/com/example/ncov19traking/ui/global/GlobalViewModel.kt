@@ -1,17 +1,13 @@
-package com.example.ncov19traking.ui.home
+package com.example.ncov19traking.ui.global
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
-import com.example.ncov19traking.data.NCoVDataBase
 import com.example.ncov19traking.data.NCoVRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+class GlobalViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = NCoVRepository(application)
 

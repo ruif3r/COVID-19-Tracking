@@ -1,4 +1,4 @@
-package com.example.ncov19traking.ui.dashboard
+package com.example.ncov19traking.ui.countries
 
 import android.os.Bundle
 import android.view.*
@@ -13,10 +13,10 @@ import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.NCoVRecyclerAdapter
 import com.example.ncov19traking.R
 
-class DashboardFragment : Fragment() {
+class CountriesFragment : Fragment() {
 
     private val dashboardViewModel by lazy {
-        ViewModelProvider(this).get(DashboardViewModel::class.java)
+        ViewModelProvider(this).get(CountriesViewModel::class.java)
     }
     private val nCoVRecyclerAdapter = NCoVRecyclerAdapter()
 

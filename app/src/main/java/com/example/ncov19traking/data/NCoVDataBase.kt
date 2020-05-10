@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import com.example.ncov19traking.Converters
 import com.example.ncov19traking.daos.CountryDao
 import com.example.ncov19traking.daos.GlobalHistoricalDao
+import com.example.ncov19traking.daos.NCoVDao
 import com.example.ncov19traking.models.NCoVInfo
 import com.example.ncov19traking.models.NCoVInfoYesterday
 import com.example.ncov19traking.models.NumbersByCountry

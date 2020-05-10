@@ -13,7 +13,4 @@ interface CountryDao {
 
     @Query("SELECT * FROM NumbersByCountry")
     fun load(): Array<NumbersByCountry>
-
-    @Query("DELETE FROM NumbersByCountry")
-    fun delete()
 }
