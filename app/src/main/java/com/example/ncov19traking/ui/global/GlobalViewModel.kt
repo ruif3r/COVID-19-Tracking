@@ -3,13 +3,14 @@ package com.example.ncov19traking.ui.global
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.liveData
+import com.example.ncov19traking.data.NCoVDataBase
 import com.example.ncov19traking.data.NCoVRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class GlobalViewModel(application: Application) : AndroidViewModel(application) {
+class GlobalViewModel(context: Application) : AndroidViewModel(context) {
 
-    private val repo = NCoVRepository(application)
+    private val repo = NCoVRepository(NCoVDataBase.getDataBase(context))
 
     var nCoVAllCases = liveData(Dispatchers.IO) { emit(repo.getAllCases()) }
 
@@ -19,7 +20,6 @@ class GlobalViewModel(application: Application) : AndroidViewModel(application) 
         runBlocking(Dispatchers.IO) {
             repo.deleteAllCases()
         }
-
     }
 
     fun getCasesPercentageDifference(universeNumber: Int, fieldNumber: Int): String {
@@ -27,5 +27,7 @@ class GlobalViewModel(application: Application) : AndroidViewModel(application) 
         return difference.times(100).div(universeNumber.toFloat()).format(2)
     }
 
-    fun Float.format(digits: Int) = "%.${digits}f".format(this)
+    private fun Float.format(digits: Int) = "%.${digits}f".format(this)
+
+    fun getErrorOnFetchFailure() = repo.notifyError()
 }

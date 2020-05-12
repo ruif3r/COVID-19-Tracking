@@ -13,10 +13,7 @@ interface NCoVDao {
     fun save(nCoVInfo: NCoVInfo)
 
     @Query("SELECT * FROM nCoVInfo")
-    fun load(): NCoVInfo
-
-    @Query("SELECT COUNT(*) FROM NCoVInfo")
-    fun getCount(): Int
+    fun load(): Array<NCoVInfo>
 
     @Query("DELETE FROM nCoVInfo")
     fun delete()
@@ -25,5 +22,5 @@ interface NCoVDao {
     fun saveYesterday(nCovInfoYesterday : NCoVInfoYesterday)
 
     @Query("SELECT * FROM nCovInfoYesterday")
-    fun loadYesterday():NCoVInfoYesterday
+    fun loadYesterday(): Array<NCoVInfoYesterday>
 }

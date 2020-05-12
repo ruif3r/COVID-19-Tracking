@@ -3,6 +3,7 @@ package com.example.ncov19traking.ui.countries
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.NCoVRecyclerAdapter
 import com.example.ncov19traking.R
+import com.example.ncov19traking.models.ErrorBody
 
 class CountriesFragment : Fragment() {
 
@@ -40,8 +42,14 @@ class CountriesFragment : Fragment() {
             nCoVRecyclerAdapter.addToListCountries(it as Array)
             progressBarCountry.visibility = ProgressBar.GONE
         })
-
+        dashboardViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
+            showErrorMessage(error)
+        })
         return root
+    }
+
+    private fun showErrorMessage(error: ErrorBody) {
+        Toast.makeText(context, "Error ${error.code}: ${error.message}", Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
