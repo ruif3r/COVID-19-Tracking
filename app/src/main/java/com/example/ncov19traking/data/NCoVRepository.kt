@@ -1,46 +1,39 @@
 package com.example.ncov19traking.data
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.ncov19traking.api.*
-import com.example.ncov19traking.models.NCoVInfo
-import com.example.ncov19traking.models.NCoVInfoYesterday
-import com.example.ncov19traking.models.NumbersByCountry
-import com.example.ncov19traking.models.Timeline
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.ncov19traking.models.*
 import java.io.IOException
 
-class NCoVRepository(private val context: Context) {
+class NCoVRepository(nCoVDataBase: NCoVDataBase) {
 
-    private val nCoVDao = NCoVDataBase.getDataBase(context).nCoVDao()
-    private val countryDao = NCoVDataBase.getDataBase(context).countryDao()
-    private val globalHistoricalDao = NCoVDataBase.getDataBase(context).globalHistoricalDao()
+    private val nCoVDao = nCoVDataBase.nCoVDao()
+    private val countryDao = nCoVDataBase.countryDao()
+    private val globalHistoricalDao = nCoVDataBase.globalHistoricalDao()
+    private var errorResponse = MutableLiveData<ErrorBody>()
 
     suspend fun getAllCases(): NCoVInfo {
         return try {
-            when (val response = ApiResponse.create(NCoVApiAdapter.nCoVApi.getGeneralNumbers())) {
+            when (val response = ApiResponse.create(NCoVApiClient.nCoVApi.getGeneralNumbers())) {
                 is ApiSuccessResponse -> {
                     nCoVDao.save(response.data)
-                    nCoVDao.load()
+                    nCoVDao.load().first()
                 }
-                is ApiSuccessEmptyResponse -> nCoVDao.load()
+                is ApiSuccessEmptyResponse -> nCoVDao.load().first()
                 is ApiErrorResponse -> {
                     Log.d("apiError", "${response.code}: ${response.message}")
-                    notifyError(response.message, response.code)
-                    nCoVDao.load()
+                    errorResponse.postValue(ErrorBody(response.code, response.message))
+                    nCoVDao.load().first()
                 }
             }
         } catch (e: IOException) {
-            if (nCoVDao.load().size != 0)
+            errorResponse.postValue(e.message?.let { ErrorBody(message = it) })
+            if (nCoVDao.load().isNotEmpty())
                 nCoVDao.load().first()
             else NCoVInfo(0, 0, 0, 0)
         }
-    }
-
-    private suspend fun refreshAllCases() {
-        NCoVApiAdapter.nCoVApi.getGeneralNumbers().body()?.let { nCoVDao.save(it) }
     }
 
     fun deleteAllCases() {
@@ -50,19 +43,19 @@ class NCoVRepository(private val context: Context) {
     suspend fun getAllYesterdayCases(): NCoVInfoYesterday {
         return try {
             when (val response =
-                ApiResponse.create(NCoVApiAdapter.nCoVApi.getYesterdayGeneralNumbers())) {
+                ApiResponse.create(NCoVApiClient.nCoVApi.getYesterdayGeneralNumbers())) {
                 is ApiSuccessResponse -> {
                     nCoVDao.saveYesterday(response.data)
-                    nCoVDao.loadYesterday()
+                    nCoVDao.loadYesterday().first()
                 }
-                is ApiSuccessEmptyResponse -> nCoVDao.loadYesterday()
+                is ApiSuccessEmptyResponse -> nCoVDao.loadYesterday().first()
                 is ApiErrorResponse -> {
                     Log.d("apiError", "${response.code}: ${response.message}")
-                    nCoVDao.loadYesterday()
+                    nCoVDao.loadYesterday().first()
                 }
             }
         } catch (e: Exception) {
-            if (nCoVDao.loadYesterday().size != 0)
+            if (nCoVDao.loadYesterday().isNotEmpty())
                 nCoVDao.loadYesterday().first()
             else
                 NCoVInfoYesterday(0, 0, 0, 0)
@@ -71,7 +64,7 @@ class NCoVRepository(private val context: Context) {
 
     suspend fun getAllCountries(): Array<NumbersByCountry>? {
         return try {
-            when (val response = ApiResponse.create(NCoVApiAdapter.nCoVApi.getNumbersByCountry())) {
+            when (val response = ApiResponse.create(NCoVApiClient.nCoVApi.getNumbersByCountry())) {
                 is ApiSuccessResponse -> {
                     countryDao.save(response.data)
                     countryDao.load()
@@ -79,49 +72,46 @@ class NCoVRepository(private val context: Context) {
                 is ApiSuccessEmptyResponse -> countryDao.load()
                 is ApiErrorResponse -> {
                     Log.d("apiError", "${response.code}: ${response.message}")
-                    notifyError(response.message, response.code)
+                    errorResponse.postValue(ErrorBody(response.code, response.message))
                     countryDao.load()
                 }
             }
         } catch (e: IOException) {
             Log.d("debug", "${e.cause}: ${e.message}")
+            errorResponse.postValue(e.message?.let { ErrorBody(message = it) })
             if (countryDao.load().isNotEmpty())
                 countryDao.load()
-            } else emptyArray()
+            else emptyArray()
         }
     }
 
-    suspend fun getHistoricalCountryData() = NCoVApiAdapter.nCoVApi.getHistoricalDataByCountry()
+
+    suspend fun getHistoricalCountryData() = NCoVApiClient.nCoVApi.getHistoricalDataByCountry()
 
     suspend fun getAllHistoricalDataCases(): Timeline? {
         return try {
             when (val response =
-                ApiResponse.create(NCoVApiAdapter.nCoVApi.getAllHistoricalData())) {
+                ApiResponse.create(NCoVApiClient.nCoVApi.getAllHistoricalData())) {
                 is ApiSuccessResponse -> {
                     globalHistoricalDao.save(response.data)
-                    globalHistoricalDao.load()
+                    globalHistoricalDao.load().first()
                 }
-                is ApiSuccessEmptyResponse -> globalHistoricalDao.load()
+                is ApiSuccessEmptyResponse -> globalHistoricalDao.load().first()
                 is ApiErrorResponse -> {
                     Log.d("apiError", "${response.code}: ${response.message}")
-                    notifyError(response.message, response.code)
-                    globalHistoricalDao.load()
+                    errorResponse.postValue(ErrorBody(response.code, response.message))
+                    globalHistoricalDao.load().first()
                 }
             }
         } catch (e: Exception) {
-            if (globalHistoricalDao.load().size != 0)
+            errorResponse.postValue(e.message?.let { ErrorBody(message = it) })
+            if (globalHistoricalDao.load().isNotEmpty())
                 globalHistoricalDao.load().first()
             else null
         }
     }
 
-    private suspend fun notifyError(errorMessage: String?, errorCode: Int?) {
-        withContext(Dispatchers.Main) {
-            if (errorCode != null)
-                Toast.makeText(context, "Error code $errorCode: $errorMessage", Toast.LENGTH_LONG)
-                    .show()
-            else
-                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-        }
+    fun notifyError(): LiveData<ErrorBody> {
+        return errorResponse
     }
 }
