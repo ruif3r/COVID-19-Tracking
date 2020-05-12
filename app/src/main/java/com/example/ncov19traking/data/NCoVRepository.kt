@@ -33,11 +33,14 @@ class NCoVRepository(private val context: Context) {
                 }
             }
         } catch (e: IOException) {
-            if (nCoVDao.getCount() != 0) {
-                notifyError(e.message, null)
-                nCoVDao.load()
-            } else NCoVInfo(0, 0, 0, 0)
+            if (nCoVDao.load().size != 0)
+                nCoVDao.load().first()
+            else NCoVInfo(0, 0, 0, 0)
         }
+    }
+
+    private suspend fun refreshAllCases() {
+        NCoVApiAdapter.nCoVApi.getGeneralNumbers().body()?.let { nCoVDao.save(it) }
     }
 
     fun deleteAllCases() {
@@ -58,10 +61,11 @@ class NCoVRepository(private val context: Context) {
                     nCoVDao.loadYesterday()
                 }
             }
-        } catch (e: IOException) {
-            if (nCoVDao.getCount() != 0)
-                nCoVDao.loadYesterday()
-            else NCoVInfoYesterday(0, 0, 0, 0)
+        } catch (e: Exception) {
+            if (nCoVDao.loadYesterday().size != 0)
+                nCoVDao.loadYesterday().first()
+            else
+                NCoVInfoYesterday(0, 0, 0, 0)
         }
     }
 
@@ -80,8 +84,8 @@ class NCoVRepository(private val context: Context) {
                 }
             }
         } catch (e: IOException) {
-            if (countryDao.getCountryCount() != 0) {
-                notifyError(e.message, null)
+            Log.d("debug", "${e.cause}: ${e.message}")
+            if (countryDao.load().isNotEmpty())
                 countryDao.load()
             } else emptyArray()
         }
@@ -104,11 +108,10 @@ class NCoVRepository(private val context: Context) {
                     globalHistoricalDao.load()
                 }
             }
-        } catch (e: IOException) {
-            if (globalHistoricalDao.getTimelineCount() != 0) {
-                notifyError(e.message, null)
-                globalHistoricalDao.load()
-            } else null
+        } catch (e: Exception) {
+            if (globalHistoricalDao.load().size != 0)
+                globalHistoricalDao.load().first()
+            else null
         }
     }
 
