@@ -41,3 +41,5 @@ data class Timeline(
 )
 
 data class CountryInfo(var flag: String)
+
+data class ErrorBody(var code: Int = 0, var message: String = "Unknown")

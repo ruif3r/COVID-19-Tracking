@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.R
+import com.example.ncov19traking.models.ErrorBody
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -19,7 +21,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 class GraphsFragment : Fragment() {
 
-    private val notificationsViewModel by lazy {
+    private val graphsViewModel by lazy {
         ViewModelProvider(this).get(GraphsViewModel::class.java)
     }
 
@@ -32,7 +34,7 @@ class GraphsFragment : Fragment() {
         val chart: LineChart = root.findViewById(R.id.chart)
         val textColor = ContextCompat.getColor(root.context, R.color.graphTextColor)
         setUpChart(chart, textColor)
-        notificationsViewModel.nCoVAllHistoricalData.observe(viewLifecycleOwner, Observer { nCovTimeline ->
+        graphsViewModel.nCoVAllHistoricalData.observe(viewLifecycleOwner, Observer { nCovTimeline ->
             val allLineData = ArrayList<ILineDataSet>()
             if (nCovTimeline != null) {
                 allLineData.add(
@@ -61,7 +63,14 @@ class GraphsFragment : Fragment() {
             chart.data = lineData
             chart.invalidate()
         })
+        graphsViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
+            showErrorMessage(error)
+        })
         return root
+    }
+
+    private fun showErrorMessage(error: ErrorBody) {
+        Toast.makeText(context, "Error ${error.code}: ${error.message}", Toast.LENGTH_LONG).show()
     }
 
     private fun setUpChart(chart: LineChart, textColor: Int) {

@@ -39,7 +39,7 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
 
     }
 
-    fun addToListCountries(countryList: Array<NumbersByCountry>) {
+    fun addToListCountries(countryList: Array<NumbersByCountry>?) {
         if (countryList != null) {
             dataset.addAll(countryList)
             datasetForSearch = ArrayList(dataset)
