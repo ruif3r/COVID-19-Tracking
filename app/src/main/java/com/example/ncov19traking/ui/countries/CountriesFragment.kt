@@ -6,8 +6,8 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ncov19traking.AlertDialogBuilder
@@ -17,9 +17,7 @@ import com.example.ncov19traking.models.ErrorBody
 
 class CountriesFragment : Fragment() {
 
-    private val dashboardViewModel by lazy {
-        ViewModelProvider(this).get(CountriesViewModel::class.java)
-    }
+    private val countriesViewModel by viewModels<CountriesViewModel>()
     private val nCoVRecyclerAdapter = NCoVRecyclerAdapter()
     private var isSortedByCases = true
 
@@ -38,11 +36,11 @@ class CountriesFragment : Fragment() {
         recyclerView.adapter = nCoVRecyclerAdapter
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        dashboardViewModel.nCoVCasesByCountry.observe(viewLifecycleOwner, Observer {
+        countriesViewModel.nCoVCasesByCountry.observe(viewLifecycleOwner, Observer {
             nCoVRecyclerAdapter.addToListCountries(it as Array)
             progressBarCountry.visibility = ProgressBar.GONE
         })
-        dashboardViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
+        countriesViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
             showErrorMessage(error)
         })
         return root
@@ -72,17 +70,12 @@ class CountriesFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.appbar_refresh -> {
-                dashboardViewModel.refreshCountryList()
+                countriesViewModel.refreshCountryList()
                 return true
             }
             R.id.appbar_sort -> {
-                if (isSortedByCases) {
-                    isSortedByCases = false
-                    nCoVRecyclerAdapter.changeSort(isSortedByCases)
-                } else {
-                    isSortedByCases = true
-                    nCoVRecyclerAdapter.changeSort(isSortedByCases)
-                }
+                isSortedByCases = !isSortedByCases
+                nCoVRecyclerAdapter.changeSort(isSortedByCases)
             }
             R.id.appbar_about -> {
                 val aboutDialog = AlertDialogBuilder()

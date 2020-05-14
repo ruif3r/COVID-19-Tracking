@@ -7,19 +7,19 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class NCoVInfo(
-    var cases: Int,
-    var deaths: Int,
-    var recovered: Int,
-    var updated: Long,
+    var cases: Int = 0,
+    var deaths: Int = 0,
+    var recovered: Int = 0,
+    var updated: Long = 0,
     @PrimaryKey @ColumnInfo(defaultValue = "current") val from: String = "current"
 )
 
 @Entity
 data class NCoVInfoYesterday(
-    var cases: Int,
-    var deaths: Int,
-    var recovered: Int,
-    var updated: Long,
+    var cases: Int = 0,
+    var deaths: Int = 0,
+    var recovered: Int = 0,
+    var updated: Long = 0,
     @PrimaryKey @ColumnInfo(defaultValue = "yesterday") val from: String = "yesterday"
 )
 
@@ -28,11 +28,7 @@ data class NumbersByCountry(
     @PrimaryKey var country: String,
     var cases: Int, var todayCases: Int, var deaths: Int, var todayDeaths: Int,
     var recovered: Int, var active: Int, var critical: Int, @Embedded var countryInfo: CountryInfo
-) {
-    override fun hashCode(): Int {
-        return 3 * country.hashCode()
-    }
-}
+)
 
 data class CountryHistoricalData(var country: String, var timeline: Timeline)
 

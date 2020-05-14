@@ -23,7 +23,6 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
                 }
                 is ApiSuccessEmptyResponse -> nCoVDao.load().first()
                 is ApiErrorResponse -> {
-                    Log.d("apiError", "${response.code}: ${response.message}")
                     errorResponse.postValue(ErrorBody(response.code, response.message))
                     nCoVDao.load().first()
                 }
@@ -32,7 +31,7 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
             errorResponse.postValue(e.message?.let { ErrorBody(message = it) })
             if (nCoVDao.load().isNotEmpty())
                 nCoVDao.load().first()
-            else NCoVInfo(0, 0, 0, 0)
+            else NCoVInfo()
         }
     }
 
@@ -58,7 +57,7 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
             if (nCoVDao.loadYesterday().isNotEmpty())
                 nCoVDao.loadYesterday().first()
             else
-                NCoVInfoYesterday(0, 0, 0, 0)
+                NCoVInfoYesterday()
         }
     }
 
@@ -71,7 +70,6 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
                 }
                 is ApiSuccessEmptyResponse -> countryDao.load()
                 is ApiErrorResponse -> {
-                    Log.d("apiError", "${response.code}: ${response.message}")
                     errorResponse.postValue(ErrorBody(response.code, response.message))
                     countryDao.load()
                 }
@@ -98,7 +96,6 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
                 }
                 is ApiSuccessEmptyResponse -> globalHistoricalDao.load().first()
                 is ApiErrorResponse -> {
-                    Log.d("apiError", "${response.code}: ${response.message}")
                     errorResponse.postValue(ErrorBody(response.code, response.message))
                     globalHistoricalDao.load().first()
                 }
