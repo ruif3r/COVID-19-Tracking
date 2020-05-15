@@ -27,23 +27,7 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
                     datasetForSearch.filter { it.country.contains(filterPattern, true) }
                 }
             }
-        } /*{
-            var filteredList = ArrayList<NumbersByCountry>()
-            if (constraint.isNullOrEmpty()) {
-                filteredList = datasetForSearch
-            } else {
-                val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim()
-
-                for (item in datasetForSearch) {
-                    if (item.country.toLowerCase(Locale.ROOT).contains(filterPattern)) {
-                        filteredList.add(item)
-                    }
-                }
-            }
-            val result = FilterResults()
-            result.values = filteredList
-            return result
-        }*/
+        }
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
             dataset.clear()
