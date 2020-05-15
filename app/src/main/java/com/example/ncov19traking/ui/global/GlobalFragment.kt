@@ -6,8 +6,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
@@ -15,9 +15,7 @@ import java.util.*
 
 class GlobalFragment : Fragment() {
 
-    private val homeViewModel by lazy {
-        ViewModelProvider(this).get(GlobalViewModel::class.java)
-    }
+    private val homeViewModel by viewModels<GlobalViewModel>()
     private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(

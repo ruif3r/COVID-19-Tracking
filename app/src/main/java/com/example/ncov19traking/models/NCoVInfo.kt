@@ -7,19 +7,19 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class NCoVInfo(
-    var cases: Int,
-    var deaths: Int,
-    var recovered: Int,
-    var updated: Long,
+    var cases: Int = 0,
+    var deaths: Int = 0,
+    var recovered: Int = 0,
+    var updated: Long = 0,
     @PrimaryKey @ColumnInfo(defaultValue = "current") val from: String = "current"
 )
 
 @Entity
 data class NCoVInfoYesterday(
-    var cases: Int,
-    var deaths: Int,
-    var recovered: Int,
-    var updated: Long,
+    var cases: Int = 0,
+    var deaths: Int = 0,
+    var recovered: Int = 0,
+    var updated: Long = 0,
     @PrimaryKey @ColumnInfo(defaultValue = "yesterday") val from: String = "yesterday"
 )
 

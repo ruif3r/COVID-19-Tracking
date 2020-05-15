@@ -16,68 +16,17 @@ import kotlin.collections.ArrayList
 class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>(), Filterable {
 
     private val dataset = ArrayList<NumbersByCountry>()
+
     private var datasetForSearch = dataset
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.country_card, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun getItemCount() = dataset.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val nCoVInfo = dataset[position]
-        Picasso.get().load(nCoVInfo.countryInfo.flag).into(holder.flag)
-        holder.countryName.text = nCoVInfo.country
-        holder.totalCases.text = nCoVInfo.cases.toString()
-        holder.recovered.text = "${nCoVInfo.recovered} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.recovered)}%)"
-        holder.deaths.text = "${nCoVInfo.deaths} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.deaths)}%)"
-        holder.active.text = nCoVInfo.active.toString()
-        holder.todayCases.text = nCoVInfo.todayCases.toString()
-        holder.todayDeaths.text = nCoVInfo.todayDeaths.toString()
-        holder.critical.text = nCoVInfo.critical.toString()
-
-    }
-
-    fun addToListCountries(countryList: Array<NumbersByCountry>?) {
-        if (countryList != null) {
-            dataset.addAll(countryList)
-            datasetForSearch = ArrayList(dataset)
-            notifyDataSetChanged()
-        }
-    }
-
-    public class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var countryName = itemView.findViewById<TextView>(R.id.countryName)
-        var totalCases = itemView.findViewById<TextView>(R.id.total_cases_numbers)
-        var deaths = itemView.findViewById<TextView>(R.id.deaths_cases_numbers)
-        var recovered = itemView.findViewById<TextView>(R.id.recovered_cases_numbers)
-        var active = itemView.findViewById<TextView>(R.id.active_cases_numbers)
-        var todayCases = itemView.findViewById<TextView>(R.id.today_cases_numbers)
-        var todayDeaths = itemView.findViewById<TextView>(R.id.today_deaths_numbers)
-        var critical = itemView.findViewById<TextView>(R.id.critical_cases_numbers)
-        var flag = itemView.findViewById<ImageView>(R.id.countryFlagImgeView)
-    }
-
-    override fun getFilter() = countryFilter
-
-    private var countryFilter = object : Filter(){
+    private var countryFilter: Filter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults {
-            var filteredList = ArrayList<NumbersByCountry>()
-            if (constraint.isNullOrEmpty()){
-                filteredList = datasetForSearch
-            }else {
-                val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim()
-
-                for (item in datasetForSearch){
-                    if (item.country.toLowerCase(Locale.ROOT).contains(filterPattern)){
-                        filteredList.add(item)
-                    }
+            return FilterResults().apply {
+                values = datasetForSearch.takeIf { constraint.isNullOrEmpty() } ?: let {
+                    val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim()
+                    datasetForSearch.filter { it.country.contains(filterPattern, true) }
                 }
             }
-            val result = FilterResults()
-            result.values=filteredList
-            return result
         }
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
@@ -88,9 +37,75 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
 
     }
 
-    fun calculatePercentage(universeNumber : Int, fieldNumber : Int) : String{
-       return fieldNumber.times(100).div(universeNumber.toFloat()).format(2)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.country_card, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun getItemId(position: Int): Long = dataset[position].hashCode().toLong()
+
+    override fun getItemCount() = dataset.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val nCoVInfo = dataset[position]
+        Picasso.get().load(nCoVInfo.countryInfo.flag).into(holder.flag)
+        holder.countryName.text = nCoVInfo.country
+        holder.totalCases.text = nCoVInfo.cases.toString()
+        holder.recovered.text =
+            "${nCoVInfo.recovered} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.recovered)}%)"
+        holder.deaths.text =
+            "${nCoVInfo.deaths} (${calculatePercentage(nCoVInfo.cases, nCoVInfo.deaths)}%)"
+        holder.active.text = nCoVInfo.active.toString()
+        holder.todayCases.text = nCoVInfo.todayCases.toString()
+        holder.todayDeaths.text = nCoVInfo.todayDeaths.toString()
+        holder.critical.text = nCoVInfo.critical.toString()
+
+    }
+
+    fun addToListCountries(countryList: Array<NumbersByCountry>?) {
+        if (countryList != null) {
+            dataset.addAll(countryList)
+            sortByActiveCases()
+            datasetForSearch = ArrayList(dataset)
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun getFilter() = countryFilter
+
+    private fun calculatePercentage(universeNumber: Int, fieldNumber: Int): String {
+        return fieldNumber.times(100).div(universeNumber.toFloat()).format(2)
     }
 
     fun Float.format(digits: Int) = "%.${digits}f".format(this)
+
+    private fun sortByActiveCases() {
+        dataset.sortByDescending { it.active }
+    }
+
+    private fun sortAlphabetically() {
+        dataset.sortBy { it.country }
+    }
+
+    fun changeSort(isSortedByCases: Boolean) {
+        if (isSortedByCases) {
+            sortByActiveCases()
+        } else {
+            sortAlphabetically()
+        }
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var countryName = itemView.findViewById<TextView>(R.id.countryName)
+        var totalCases = itemView.findViewById<TextView>(R.id.total_cases_numbers)
+        var deaths = itemView.findViewById<TextView>(R.id.deaths_cases_numbers)
+        var recovered = itemView.findViewById<TextView>(R.id.recovered_cases_numbers)
+        var active = itemView.findViewById<TextView>(R.id.active_cases_numbers)
+        var todayCases = itemView.findViewById<TextView>(R.id.today_cases_numbers)
+        var todayDeaths = itemView.findViewById<TextView>(R.id.today_deaths_numbers)
+        var critical = itemView.findViewById<TextView>(R.id.critical_cases_numbers)
+        var flag = itemView.findViewById<ImageView>(R.id.countryFlagImgeView)
+
+    }
 }

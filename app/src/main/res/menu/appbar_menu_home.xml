@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/appbar_home_refresh"
-        android:title="@string/appbarRefresh"
+        android:title="@string/appbar_refresh"
         app:showAsAction="never"/>
 
     <item android:id="@+id/appbar_home_about"
-        android:title="@string/appbarAbout"
+        android:title="@string/appbar_about"
         app:showAsAction="never"/>
 
 </menu>

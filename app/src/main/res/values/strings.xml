@@ -8,11 +8,12 @@
     <string name="recovered_title">Recovered:</string>
     <string name="last_update_date">Last Update:</string>
     <string name="search">Search</string>
-    <string name="appbarRefresh">Refresh</string>
-    <string name="appbarAbout">About</string>
+    <string name="appbar_refresh">Refresh</string>
+    <string name="appbar_about">About</string>
     <string name="global_cases_string">Global Cases</string>
     <string name="total_deaths">Total Deaths</string>
     <string name="total_recovered">Total Recovered</string>
     <string name="global_graph_description">COVID-19 Timeline</string>
     <string name="since_yesterday">+%s%% since yesterday</string>
+    <string name="sort">Sort</string>
 </resources>

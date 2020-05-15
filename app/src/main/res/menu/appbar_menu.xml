@@ -9,11 +9,17 @@
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/appbar_refresh"
-        android:title="@string/appbarRefresh"
+        android:title="@string/appbar_refresh"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/appbar_sort"
+        android:title="@string/sort"
+        android:icon="@drawable/ic_sort_black_24dp"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/appbar_about"
-        android:title="@string/appbarAbout"
+        android:title="@string/appbar_about"
         app:showAsAction="never"/>
 
 </menu>
