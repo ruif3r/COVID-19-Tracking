@@ -8,6 +8,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -34,9 +35,9 @@ class GraphsFragment : Fragment() {
         val progressBar: ProgressBar = root.findViewById(R.id.graph_fragment_progressBar)
         val textColor = ContextCompat.getColor(root.context, R.color.graphTextColor)
         setUpChart(chart, textColor)
-        chart.visibility = View.GONE
+        chart.isVisible = false
         graphsViewModel.nCoVAllHistoricalData.observe(viewLifecycleOwner, Observer { nCovTimeline ->
-            progressBar.visibility = View.VISIBLE
+            progressBar.isVisible = true
             if (nCovTimeline != null) {
                 val allLineData = ArrayList<ILineDataSet>()
                 allLineData.add(
@@ -60,12 +61,11 @@ class GraphsFragment : Fragment() {
                         ContextCompat.getColor(root.context, R.color.recoveredColor)
                     )
                 )
-                val lineData = LineData(allLineData)
-                chart.data = lineData
+                chart.data = LineData(allLineData)
             }
             chart.invalidate()
-            chart.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
+            chart.isVisible = true
+            progressBar.isVisible = false
         })
         graphsViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
             showErrorMessage(error)
