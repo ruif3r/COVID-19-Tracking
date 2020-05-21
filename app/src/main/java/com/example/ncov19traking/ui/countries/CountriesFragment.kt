@@ -6,7 +6,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +17,7 @@ import com.example.ncov19traking.models.ErrorBody
 
 class CountriesFragment : Fragment() {
 
-    private val countriesViewModel by viewModels<CountriesViewModel>()
+    private val countriesViewModel by activityViewModels<CountriesViewModel>()
     private val nCoVRecyclerAdapter = NCoVRecyclerAdapter()
     private var isSortedByCases = true
 
