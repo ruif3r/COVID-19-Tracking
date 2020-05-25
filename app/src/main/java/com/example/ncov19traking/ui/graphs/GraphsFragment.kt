@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
+import com.example.ncov19traking.models.Timeline
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -26,47 +27,62 @@ class GraphsFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
-        val chart: LineChart = root.findViewById(R.id.chart)
-        val textColor = ContextCompat.getColor(root.context, R.color.graphTextColor)
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) = inflater.inflate(R.layout.fragment_notifications, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val chart: LineChart = view.findViewById(R.id.chart)
+        val textColor = ContextCompat.getColor(view.context, R.color.graphTextColor)
         setUpChart(chart, textColor)
+        setupObservables(chart)
+    }
+
+    private fun setupObservables(chart: LineChart) {
         graphsViewModel.nCoVAllHistoricalData.observe(viewLifecycleOwner, Observer { nCovTimeline ->
-            val allLineData = ArrayList<ILineDataSet>()
-            if (nCovTimeline != null) {
-                allLineData.add(
-                    defineDataSet(
-                        addDataToEntriesArrays(nCovTimeline.cases),
-                        getString(R.string.global_cases_string),
-                        ContextCompat.getColor(root.context, R.color.colorAccent)
-                    )
-                )
-                allLineData.add(
-                    defineDataSet(
-                        addDataToEntriesArrays(nCovTimeline.deaths),
-                        getString(R.string.total_deaths),
-                        ContextCompat.getColor(root.context, R.color.deathsColor)
-                    )
-                )
-                allLineData.add(
-                    defineDataSet(
-                        addDataToEntriesArrays(nCovTimeline.recovered),
-                        getString(R.string.total_recovered),
-                        ContextCompat.getColor(root.context, R.color.recoveredColor)
-                    )
-                )
-            }
-            val lineData = LineData(allLineData)
-            chart.data = lineData
+            chart.data = getLineData(nCovTimeline)
             chart.invalidate()
         })
         graphsViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
             showErrorMessage(error)
         })
-        return root
+    }
+
+    private fun getLineData(nCovTimeline: Timeline?): LineData {
+        val allLineData = ArrayList<ILineDataSet>()
+        nCovTimeline?.run {
+            allLineData.addDefinedDataset(
+                nCovTimeline.cases,
+                R.string.global_cases_string,
+                R.color.colorAccent
+            )
+            allLineData.addDefinedDataset(
+                nCovTimeline.deaths,
+                R.string.total_deaths,
+                R.color.deathsColor
+            )
+            allLineData.addDefinedDataset(
+                nCovTimeline.recovered,
+                R.string.total_recovered,
+                R.color.recoveredColor
+            )
+        }
+        return LineData(allLineData)
+    }
+
+    private fun ArrayList<ILineDataSet>.addDefinedDataset(
+        cases: LinkedHashMap<String, Int>,
+        messageStringResource: Int,
+        colorResource: Int
+    ) {
+        add(
+            defineDataSet(
+                addDataToEntriesArrays(cases),
+                getString(messageStringResource),
+                ContextCompat.getColor(requireContext(), colorResource)
+            )
+        )
     }
 
     private fun showErrorMessage(error: ErrorBody) {
@@ -83,10 +99,10 @@ class GraphsFragment : Fragment() {
         chart.setMaxVisibleValueCount(30)
     }
 
-    private fun addDataToEntriesArrays(nCovTimelineData : LinkedHashMap<String, Int>): ArrayList<Entry> {
+    private fun addDataToEntriesArrays(nCovTimelineData: LinkedHashMap<String, Int>): ArrayList<Entry> {
         val lineEntries = ArrayList<Entry>()
         var index = 0
-        for (i  in nCovTimelineData){
+        for (i in nCovTimelineData) {
             lineEntries.add(Entry(index.toFloat(), i.value.toFloat()))
             index++
         }
