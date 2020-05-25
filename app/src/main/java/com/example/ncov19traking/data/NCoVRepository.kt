@@ -6,8 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.ncov19traking.api.*
 import com.example.ncov19traking.models.*
 import java.io.IOException
+import javax.inject.Inject
 
-class NCoVRepository(nCoVDataBase: NCoVDataBase) {
+class NCoVRepository @Inject constructor(nCoVDataBase: NCoVDataBase) {
 
     private val nCoVDao = nCoVDataBase.nCoVDao()
     private val countryDao = nCoVDataBase.countryDao()

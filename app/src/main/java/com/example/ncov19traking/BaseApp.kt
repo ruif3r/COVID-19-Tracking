@@ -6,9 +6,11 @@ import android.app.NotificationManager
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import androidx.annotation.RequiresApi
+import com.example.ncov19traking.di.DaggerApplicationComponent
 
-class NotificationChannelBuilder : Application() {
+class BaseApp : Application() {
 
+    val applicationComponent by lazy { DaggerApplicationComponent.factory().create(this) }
     var notificationChannel: NotificationChannel? = null
 
     companion object {
@@ -18,12 +20,12 @@ class NotificationChannelBuilder : Application() {
     @RequiresApi(M)
     override fun onCreate() {
         super.onCreate()
-
         createNotificationChannel()
     }
 
     @RequiresApi(M)
     private fun createNotificationChannel() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannel = NotificationChannel(
                 CHANNEL_ID,
@@ -33,7 +35,6 @@ class NotificationChannelBuilder : Application() {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationChannel?.let { notificationManager.createNotificationChannel(it) }
         }
-
 
     }
 }

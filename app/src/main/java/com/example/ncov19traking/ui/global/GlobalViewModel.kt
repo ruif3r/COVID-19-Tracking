@@ -3,14 +3,13 @@ package com.example.ncov19traking.ui.global
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.liveData
-import com.example.ncov19traking.data.NCoVDataBase
-import com.example.ncov19traking.data.NCoVRepository
+import com.example.ncov19traking.BaseApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class GlobalViewModel(context: Application) : AndroidViewModel(context) {
+class GlobalViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repo = NCoVRepository(NCoVDataBase.getDataBase(context))
+    private val repo = getApplication<BaseApp>().applicationComponent.repository()
 
     var nCoVAllCases = liveData(Dispatchers.IO) { emit(repo.getAllCases()) }
 
