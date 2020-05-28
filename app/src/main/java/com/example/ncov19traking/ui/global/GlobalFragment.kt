@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -27,7 +28,7 @@ class GlobalFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GlobalFragmentViewHolder().progressBar.visibility = ProgressBar.VISIBLE
+        GlobalFragmentViewHolder().progressBar.isVisible = true
         setupObserverSubscription()
     }
 
@@ -51,8 +52,7 @@ class GlobalFragment : Fragment() {
 
     private fun setupObserverSubscription() {
         homeViewModel.nCoVAllCases.observe(viewLifecycleOwner, Observer {
-            with(GlobalFragmentViewHolder())
-            {
+            with(GlobalFragmentViewHolder()) {
                 totalCases.text = it.cases.toString()
                 recovered.text = it.recovered.toString()
                 deaths.text = it.deaths.toString()
@@ -75,7 +75,7 @@ class GlobalFragment : Fragment() {
                         homeViewModel.nCoVYesterdayAllCases.deaths
                     )
                 )
-                progressBar.visibility = ProgressBar.GONE
+                progressBar.isVisible = false
             }
         })
         homeViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->

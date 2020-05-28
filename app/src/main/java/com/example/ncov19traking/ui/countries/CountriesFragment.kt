@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -31,7 +32,7 @@ class CountriesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        CountriesViewHolder().progressBarCountry.visibility = ProgressBar.VISIBLE
+        CountriesViewHolder().progressBarCountry.isVisible = true
         setupRecyclerView()
         setupObserverSubscriptions()
     }
@@ -72,8 +73,7 @@ class CountriesFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        with(CountriesViewHolder())
-        {
+        with(CountriesViewHolder()) {
             nCoVRecyclerAdapter.setHasStableIds(true)
             recyclerView.adapter = nCoVRecyclerAdapter
             recyclerView.setHasFixedSize(true)
@@ -84,7 +84,7 @@ class CountriesFragment : Fragment() {
     private fun setupObserverSubscriptions() {
         countriesViewModel.nCoVCasesByCountry.observe(viewLifecycleOwner, Observer {
             nCoVRecyclerAdapter.addToListCountries(it as Array)
-            CountriesViewHolder().progressBarCountry.visibility = ProgressBar.GONE
+            CountriesViewHolder().progressBarCountry.isVisible = false
         })
         countriesViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
             showErrorMessage(error)

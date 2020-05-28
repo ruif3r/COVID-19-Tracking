@@ -64,30 +64,38 @@ class GraphsFragment : Fragment() {
     ): LineData? {
         nCovTimeline?.let {
             val allLineData = ArrayList<ILineDataSet>()
-            allLineData.add(
-                defineDataSet(
-                    addDataToEntriesArrays(nCovTimeline.cases),
-                    getString(R.string.global_cases_string),
-                    ContextCompat.getColor(requireContext(), R.color.colorAccent)
-                )
+            allLineData.insertChartDataSet(
+                nCovTimeline.cases,
+                R.string.total_recovered,
+                R.color.colorAccent
             )
-            allLineData.add(
-                defineDataSet(
-                    addDataToEntriesArrays(nCovTimeline.deaths),
-                    getString(R.string.total_deaths),
-                    ContextCompat.getColor(requireContext(), R.color.deathsColor)
-                )
+            allLineData.insertChartDataSet(
+                nCovTimeline.deaths,
+                R.string.total_deaths,
+                R.color.deathsColor
             )
-            allLineData.add(
-                defineDataSet(
-                    addDataToEntriesArrays(nCovTimeline.recovered),
-                    getString(R.string.total_recovered),
-                    ContextCompat.getColor(requireContext(), R.color.recoveredColor)
-                )
+            allLineData.insertChartDataSet(
+                nCovTimeline.recovered,
+                R.string.total_recovered,
+                R.color.recoveredColor
             )
             return LineData(allLineData)
         }
         return null
+    }
+
+    private fun ArrayList<ILineDataSet>.insertChartDataSet(
+        dataTimeline: LinkedHashMap<String, Int>,
+        stringDescriptionResource: Int,
+        colorDataSetResource: Int
+    ) {
+        add(
+            defineDataSet(
+                addDataToEntriesArrays(dataTimeline),
+                getString(stringDescriptionResource),
+                ContextCompat.getColor(requireContext(), colorDataSetResource)
+            )
+        )
     }
 
     private fun showErrorMessage(error: ErrorBody) {
