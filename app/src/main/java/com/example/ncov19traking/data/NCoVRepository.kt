@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.ncov19traking.api.*
+import com.example.ncov19traking.daos.CountryDao
+import com.example.ncov19traking.daos.GlobalHistoricalDao
+import com.example.ncov19traking.daos.NCoVDao
 import com.example.ncov19traking.models.*
 import java.io.IOException
 import javax.inject.Inject
 
-class NCoVRepository @Inject constructor(nCoVDataBase: NCoVDataBase) {
-
-    private val nCoVDao = nCoVDataBase.nCoVDao()
-    private val countryDao = nCoVDataBase.countryDao()
-    private val globalHistoricalDao = nCoVDataBase.globalHistoricalDao()
-    private var errorResponse = MutableLiveData<ErrorBody>()
+class NCoVRepository @Inject constructor(
+    private val nCoVDao: NCoVDao,
+    private val countryDao: CountryDao,
+    private val globalHistoricalDao: GlobalHistoricalDao,
+    private var errorResponse: MutableLiveData<ErrorBody>
+) {
 
     suspend fun getAllCases(): NCoVInfo {
         try {
@@ -74,7 +77,6 @@ class NCoVRepository @Inject constructor(nCoVDataBase: NCoVDataBase) {
         }
         return countryDao.load()
     }
-
 
     suspend fun getHistoricalCountryData() = NCoVApiClient.nCoVApi.getHistoricalDataByCountry()
 

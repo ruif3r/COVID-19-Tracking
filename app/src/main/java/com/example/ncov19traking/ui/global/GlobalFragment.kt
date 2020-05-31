@@ -1,5 +1,6 @@
 package com.example.ncov19traking.ui.global
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -8,14 +9,19 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
+import com.example.ncov19traking.BaseApp
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
 import java.util.*
+import javax.inject.Inject
 
 class GlobalFragment : Fragment() {
 
-    private val homeViewModel by activityViewModels<GlobalViewModel>()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val homeViewModel by activityViewModels<GlobalViewModel> { viewModelFactory }
     private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
@@ -64,6 +70,11 @@ class GlobalFragment : Fragment() {
         })
 
         return root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
