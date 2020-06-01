@@ -62,6 +62,8 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
 
     }
 
+    override fun getFilter() = countryFilter
+
     fun addToListCountries(countryList: Array<NumbersByCountry>?) {
         if (countryList != null) {
             dataset.addAll(countryList)
@@ -70,8 +72,6 @@ class NCoVRecyclerAdapter : RecyclerView.Adapter<NCoVRecyclerAdapter.ViewHolder>
             notifyDataSetChanged()
         }
     }
-
-    override fun getFilter() = countryFilter
 
     private fun calculatePercentage(universeNumber: Int, fieldNumber: Int): String {
         return fieldNumber.times(100).div(universeNumber.toFloat()).format(2)

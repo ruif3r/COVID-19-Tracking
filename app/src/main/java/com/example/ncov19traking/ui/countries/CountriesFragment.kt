@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -32,33 +33,19 @@ class CountriesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         setHasOptionsMenu(true)
-        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        val recyclerView = root.findViewById<RecyclerView>(R.id.country_recyclerView)
-        val progressBarCountry = root.findViewById<ProgressBar>(R.id.progressBarCountryList)
-        progressBarCountry.visibility = ProgressBar.VISIBLE
-        nCoVRecyclerAdapter.setHasStableIds(true)
-        recyclerView.adapter = nCoVRecyclerAdapter
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        countriesViewModel.nCoVCasesByCountry.observe(viewLifecycleOwner, Observer {
-            nCoVRecyclerAdapter.addToListCountries(it as Array)
-            progressBarCountry.visibility = ProgressBar.GONE
-        })
-        countriesViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
-            showErrorMessage(error)
-        })
-        return root
+        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        CountriesViewHolder().progressBarCountry.isVisible = true
+        setupRecyclerView()
+        setupObserverSubscriptions()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
-    }
-
-    private fun showErrorMessage(error: ErrorBody) {
-        Toast.makeText(context, "Error ${error.code}: ${error.message}", Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -94,5 +81,34 @@ class CountriesFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupRecyclerView() {
+        with(CountriesViewHolder()) {
+            nCoVRecyclerAdapter.setHasStableIds(true)
+            recyclerView.adapter = nCoVRecyclerAdapter
+            recyclerView.setHasFixedSize(true)
+            recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        }
+    }
+
+    private fun setupObserverSubscriptions() {
+        countriesViewModel.nCoVCasesByCountry.observe(viewLifecycleOwner, Observer {
+            nCoVRecyclerAdapter.addToListCountries(it as Array)
+            CountriesViewHolder().progressBarCountry.isVisible = false
+        })
+        countriesViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
+            showErrorMessage(error)
+        })
+    }
+
+    private fun showErrorMessage(error: ErrorBody) {
+        Toast.makeText(context, "Error ${error.code}: ${error.message}", Toast.LENGTH_LONG).show()
+    }
+
+    inner class CountriesViewHolder {
+        private val view = requireView()
+        val recyclerView: RecyclerView = view.findViewById(R.id.country_recyclerView)
+        val progressBarCountry: ProgressBar = view.findViewById(R.id.progressBarCountryList)
     }
 }
