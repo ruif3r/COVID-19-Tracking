@@ -1,5 +1,6 @@
 package com.example.ncov19traking.ui.global
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -9,14 +10,19 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
+import com.example.ncov19traking.BaseApp
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
 import java.util.*
+import javax.inject.Inject
 
 class GlobalFragment : Fragment() {
 
-    private val homeViewModel by activityViewModels<GlobalViewModel>()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val homeViewModel by activityViewModels<GlobalViewModel> { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,6 +88,12 @@ class GlobalFragment : Fragment() {
             showErrorMessage(error)
         })
     }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
+    }
+
 
     private fun showErrorMessage(error: ErrorBody) {
         Toast.makeText(context, "Error ${error.code}: ${error.message}", Toast.LENGTH_LONG).show()

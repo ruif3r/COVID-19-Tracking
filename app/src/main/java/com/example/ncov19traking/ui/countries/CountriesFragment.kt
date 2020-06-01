@@ -1,5 +1,6 @@
 package com.example.ncov19traking.ui.countries
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -9,16 +10,21 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ncov19traking.AlertDialogBuilder
+import com.example.ncov19traking.BaseApp
 import com.example.ncov19traking.NCoVRecyclerAdapter
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
+import javax.inject.Inject
 
 class CountriesFragment : Fragment() {
 
-    private val countriesViewModel by activityViewModels<CountriesViewModel>()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val countriesViewModel by activityViewModels<CountriesViewModel> { viewModelFactory }
     private val nCoVRecyclerAdapter = NCoVRecyclerAdapter()
     private var isSortedByCases = true
 
@@ -35,6 +41,11 @@ class CountriesFragment : Fragment() {
         CountriesViewHolder().progressBarCountry.isVisible = true
         setupRecyclerView()
         setupObserverSubscriptions()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

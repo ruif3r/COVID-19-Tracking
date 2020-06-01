@@ -4,19 +4,24 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.ncov19traking.api.*
+import com.example.ncov19traking.daos.CountryDao
+import com.example.ncov19traking.daos.GlobalHistoricalDao
+import com.example.ncov19traking.daos.NCoVDao
 import com.example.ncov19traking.models.*
 import java.io.IOException
+import javax.inject.Inject
 
-class NCoVRepository(nCoVDataBase: NCoVDataBase) {
-
-    private val nCoVDao = nCoVDataBase.nCoVDao()
-    private val countryDao = nCoVDataBase.countryDao()
-    private val globalHistoricalDao = nCoVDataBase.globalHistoricalDao()
-    private var errorResponse = MutableLiveData<ErrorBody>()
+class NCoVRepository @Inject constructor(
+    private val nCoVDao: NCoVDao,
+    private val countryDao: CountryDao,
+    private val globalHistoricalDao: GlobalHistoricalDao,
+    private val nCoVApi: NCoVApi,
+    private var errorResponse: MutableLiveData<ErrorBody>
+) {
 
     suspend fun getAllCases(): NCoVInfo {
         try {
-            when (val response = ApiResponse.create(NCoVApiClient.nCoVApi.getGeneralNumbers())) {
+            when (val response = ApiResponse.create(nCoVApi.getGeneralNumbers())) {
                 is ApiSuccessResponse -> nCoVDao.save(response.data)
                 is ApiSuccessEmptyResponse -> errorResponse.postValue(ErrorBody(message = "Empty body"))
                 is ApiErrorResponse -> errorResponse.postValue(
@@ -41,7 +46,7 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
     suspend fun getAllYesterdayCases(): NCoVInfoYesterday {
         try {
             when (val response =
-                ApiResponse.create(NCoVApiClient.nCoVApi.getYesterdayGeneralNumbers())) {
+                ApiResponse.create(nCoVApi.getYesterdayGeneralNumbers())) {
                 is ApiSuccessResponse -> nCoVDao.saveYesterday(response.data)
                 is ApiSuccessEmptyResponse -> errorResponse
                 is ApiErrorResponse -> Log.d("apiError", "${response.code}: ${response.message}")
@@ -55,7 +60,7 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
 
     suspend fun getAllCountries(): Array<NumbersByCountry>? {
         try {
-            when (val response = ApiResponse.create(NCoVApiClient.nCoVApi.getNumbersByCountry())) {
+            when (val response = ApiResponse.create(nCoVApi.getNumbersByCountry())) {
                 is ApiSuccessResponse -> countryDao.save(response.data)
                 is ApiSuccessEmptyResponse -> errorResponse.postValue(ErrorBody(message = "Empty body"))
                 is ApiErrorResponse -> errorResponse.postValue(
@@ -74,13 +79,12 @@ class NCoVRepository(nCoVDataBase: NCoVDataBase) {
         return countryDao.load()
     }
 
-
-    suspend fun getHistoricalCountryData() = NCoVApiClient.nCoVApi.getHistoricalDataByCountry()
+    suspend fun getHistoricalCountryData() = nCoVApi.getHistoricalDataByCountry()
 
     suspend fun getAllHistoricalDataCases(): Timeline? {
         try {
             when (val response =
-                ApiResponse.create(NCoVApiClient.nCoVApi.getAllHistoricalData())) {
+                ApiResponse.create(nCoVApi.getAllHistoricalData())) {
                 is ApiSuccessResponse -> globalHistoricalDao.save(response.data)
                 is ApiSuccessEmptyResponse -> errorResponse.postValue(ErrorBody(message = "Empty body"))
                 is ApiErrorResponse -> errorResponse.postValue(

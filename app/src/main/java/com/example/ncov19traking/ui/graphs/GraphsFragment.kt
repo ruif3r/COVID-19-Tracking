@@ -1,5 +1,6 @@
 package com.example.ncov19traking.ui.graphs
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.ncov19traking.BaseApp
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
 import com.example.ncov19traking.models.Timeline
@@ -21,10 +24,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import javax.inject.Inject
 
 class GraphsFragment : Fragment() {
 
-    private val graphsViewModel by activityViewModels<GraphsViewModel>()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val graphsViewModel by activityViewModels<GraphsViewModel> { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,6 +102,11 @@ class GraphsFragment : Fragment() {
                 ContextCompat.getColor(requireContext(), colorDataSetResource)
             )
         )
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
     }
 
     private fun showErrorMessage(error: ErrorBody) {

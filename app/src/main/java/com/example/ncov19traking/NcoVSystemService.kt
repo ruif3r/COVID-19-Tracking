@@ -16,7 +16,7 @@ class NcoVSystemService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val serviceIntent = Intent(this, GlobalFragment::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, serviceIntent, 0)
-        val notification = NotificationCompat.Builder(this, NotificationChannelBuilder.CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, BaseApp.CHANNEL_ID)
             .setContentTitle("Reminder")
             .setContentText("Wash your hands for at least 20 seconds!")
             .setSmallIcon(R.drawable.ic_timeline_black_24dp)
