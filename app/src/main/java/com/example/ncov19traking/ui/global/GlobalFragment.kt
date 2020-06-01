@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -16,7 +17,6 @@ import java.util.*
 class GlobalFragment : Fragment() {
 
     private val homeViewModel by activityViewModels<GlobalViewModel>()
-    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,46 +24,12 @@ class GlobalFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val totalCases: TextView = root.findViewById(R.id.total_cases)
-        val recovered: TextView = root.findViewById(R.id.recovered_numbers)
-        val deaths: TextView = root.findViewById(R.id.deaths_numbers)
-        val casesPercentage: TextView = root.findViewById(R.id.percentageCasesDifference)
-        val recoveredPercentage: TextView = root.findViewById(R.id.percentageRecoveredDifference)
-        val deathsPercentage: TextView = root.findViewById(R.id.percentageDeathsDifference)
-        val lastUpdateLong: TextView = root.findViewById(R.id.last_update_date)
-        progressBar = root.findViewById(R.id.progressBar)
-        progressBar.visibility = ProgressBar.VISIBLE
-        homeViewModel.nCoVAllCases.observe(viewLifecycleOwner, Observer {
-            totalCases.text = it.cases.toString()
-            recovered.text = it.recovered.toString()
-            deaths.text = it.deaths.toString()
-            lastUpdateLong.text = Date(it.updated).toString()
-            casesPercentage.text = getString(
-                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                    it.cases,
-                    homeViewModel.nCoVYesterdayAllCases.cases
-                )
-            )
-            recoveredPercentage.text = getString(
-                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                    it.recovered,
-                    homeViewModel.nCoVYesterdayAllCases.recovered
-                )
-            )
-            deathsPercentage.text = getString(
-                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                    it.deaths,
-                    homeViewModel.nCoVYesterdayAllCases.deaths
-                )
-            )
-            progressBar.visibility = ProgressBar.GONE
-        })
-        homeViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
-            showErrorMessage(error)
-        })
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
-        return root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        GlobalFragmentViewHolder().progressBar.isVisible = true
+        setupObserverSubscription()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -84,7 +50,52 @@ class GlobalFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun setupObserverSubscription() {
+        homeViewModel.nCoVAllCases.observe(viewLifecycleOwner, Observer {
+            with(GlobalFragmentViewHolder()) {
+                totalCases.text = it.cases.toString()
+                recovered.text = it.recovered.toString()
+                deaths.text = it.deaths.toString()
+                lastUpdateLong.text = Date(it.updated).toString()
+                casesPercentage.text = getString(
+                    R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                        it.cases,
+                        homeViewModel.nCoVYesterdayAllCases.cases
+                    )
+                )
+                recoveredPercentage.text = getString(
+                    R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                        it.recovered,
+                        homeViewModel.nCoVYesterdayAllCases.recovered
+                    )
+                )
+                deathsPercentage.text = getString(
+                    R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                        it.deaths,
+                        homeViewModel.nCoVYesterdayAllCases.deaths
+                    )
+                )
+                progressBar.isVisible = false
+            }
+        })
+        homeViewModel.getErrorOnFetchFailure().observe(viewLifecycleOwner, Observer { error ->
+            showErrorMessage(error)
+        })
+    }
+
     private fun showErrorMessage(error: ErrorBody) {
         Toast.makeText(context, "Error ${error.code}: ${error.message}", Toast.LENGTH_LONG).show()
+    }
+
+    inner class GlobalFragmentViewHolder {
+        private val view = requireView()
+        val totalCases: TextView = view.findViewById(R.id.total_cases)
+        val recovered: TextView = view.findViewById(R.id.recovered_numbers)
+        val deaths: TextView = view.findViewById(R.id.deaths_numbers)
+        val casesPercentage: TextView = view.findViewById(R.id.percentageCasesDifference)
+        val recoveredPercentage: TextView = view.findViewById(R.id.percentageRecoveredDifference)
+        val deathsPercentage: TextView = view.findViewById(R.id.percentageDeathsDifference)
+        val lastUpdateLong: TextView = view.findViewById(R.id.last_update_date)
+        val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
     }
 }
