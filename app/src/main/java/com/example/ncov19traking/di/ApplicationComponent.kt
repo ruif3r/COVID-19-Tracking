@@ -10,7 +10,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DataBaseModule::class, ViewModelModule::class])
+@Component(modules = [DataBaseModule::class, ViewModelModule::class, NetworkModule::class])
 interface ApplicationComponent {
 
     fun repository(): NCoVRepository
