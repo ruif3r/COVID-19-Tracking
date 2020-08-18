@@ -6,12 +6,17 @@ import android.app.NotificationManager
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import androidx.annotation.RequiresApi
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ncov19traking.di.DaggerApplicationComponent
+import java.util.concurrent.TimeUnit
 
 class BaseApp : Application() {
 
     val applicationComponent by lazy { DaggerApplicationComponent.factory().create(this) }
-    var notificationChannel: NotificationChannel? = null
+    private var notificationChannel: NotificationChannel? = null
+    private val workName = "WASH_HANDS"
 
     companion object {
         const val CHANNEL_ID = "covid channel id"
@@ -21,6 +26,7 @@ class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        showNotificationByWorker()
     }
 
     @RequiresApi(M)
@@ -31,10 +37,21 @@ class BaseApp : Application() {
                 CHANNEL_ID,
                 "Covid-19 Tracking Channel",
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
+            ).apply { description = "Provide reminders and info" }
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationChannel?.let { notificationManager.createNotificationChannel(it) }
         }
+    }
+
+    private fun showNotificationByWorker() {
+        val workManager = WorkManager.getInstance(this)
+        val periodicWorkRequest =
+            PeriodicWorkRequestBuilder<NotificationWorker>(11, TimeUnit.HOURS).build()
+        workManager.enqueueUniquePeriodicWork(
+            workName,
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicWorkRequest
+        )
 
     }
 }
