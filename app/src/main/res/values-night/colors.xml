@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#121212</color>
+    <color name="colorAccent">#b794f6</color>
+    <color name="recoveredColor">#c6f68d</color>
+    <color name="deathsColor">#e98df5</color>
+    <color name="criticalColor">#ffc77d</color>
+    <color name="textColor">#9E9E9E</color>
+    <color name="totalCasesChartColor">#b794f6</color>
+    <color name="backgroundColor">#121212</color>
+</resources>

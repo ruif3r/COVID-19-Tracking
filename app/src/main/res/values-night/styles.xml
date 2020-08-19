@@ -8,11 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:colorBackground">@color/backgroundColor</item>
+
     </style>
 
-    <style name="windowAnimationTransition">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-    </style>
 
 </resources>

@@ -43,7 +43,7 @@ class GraphsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val chart: LineChart = view.findViewById(R.id.chart)
         val progressBar: ProgressBar = view.findViewById(R.id.graph_fragment_progressBar)
-        val textColor = ContextCompat.getColor(view.context, R.color.graphTextColor)
+        val textColor = ContextCompat.getColor(view.context, R.color.textColor)
         setUpChart(chart, textColor)
         chart.isVisible = false
         setupObserverSubscriptions(progressBar, chart)
@@ -73,7 +73,7 @@ class GraphsFragment : Fragment() {
             allLineData.insertChartDataSet(
                 nCovTimeline.cases,
                 R.string.total_recovered,
-                R.color.colorAccent
+                R.color.totalCasesChartColor
             )
             allLineData.insertChartDataSet(
                 nCovTimeline.deaths,
@@ -137,7 +137,7 @@ class GraphsFragment : Fragment() {
 
     private fun defineDataSet(entry: ArrayList<Entry>, label: String, color: Int): LineDataSet {
         return LineDataSet(entry, label).apply {
-            valueTextColor = ResourcesCompat.getColor(resources, R.color.graphTextColor, null)
+            valueTextColor = ResourcesCompat.getColor(resources, R.color.textColor, null)
             this.color = color
             setCircleColor(color)
             setCircleColorHole(color)
