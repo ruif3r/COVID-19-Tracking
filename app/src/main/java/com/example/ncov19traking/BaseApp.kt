@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+
 import com.example.ncov19traking.di.DaggerApplicationComponent
 import java.util.concurrent.TimeUnit
 
@@ -20,6 +21,7 @@ class BaseApp : Application() {
 
     companion object {
         const val CHANNEL_ID = "covid channel id"
+        const val NOTIFICATION_REMINDER_TIME = 11L
     }
 
     @RequiresApi(M)
@@ -46,7 +48,10 @@ class BaseApp : Application() {
     private fun showNotificationByWorker() {
         val workManager = WorkManager.getInstance(this)
         val periodicWorkRequest =
-            PeriodicWorkRequestBuilder<NotificationWorker>(11, TimeUnit.HOURS).build()
+            PeriodicWorkRequestBuilder<NotificationWorker>(
+                NOTIFICATION_REMINDER_TIME,
+                TimeUnit.HOURS
+            ).build()
         workManager.enqueueUniquePeriodicWork(
             workName,
             ExistingPeriodicWorkPolicy.KEEP,
