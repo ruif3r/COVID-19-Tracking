@@ -1,6 +1,7 @@
 package com.example.ncov19traking.ui.global
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -15,6 +16,7 @@ import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.BaseApp
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
+import com.example.ncov19traking.ui.settings.SettingsActivity
 import java.util.*
 import javax.inject.Inject
 
@@ -50,8 +52,11 @@ class GlobalFragment : Fragment() {
             }
             R.id.appbar_home_about -> {
                 val aboutDialog = AlertDialogBuilder()
-                activity?.let { aboutDialog.aboutBuilder(it) }
+                activity?.let {
+                    aboutDialog.aboutBuilder(it)
+                }
             }
+            R.id.appbar_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

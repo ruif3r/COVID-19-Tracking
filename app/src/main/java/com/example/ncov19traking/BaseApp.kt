@@ -6,6 +6,8 @@ import android.app.NotificationManager
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -18,6 +20,7 @@ class BaseApp : Application() {
     val applicationComponent by lazy { DaggerApplicationComponent.factory().create(this) }
     private var notificationChannel: NotificationChannel? = null
     private val workName = "WASH_HANDS"
+    private val nightMode = "NightMode"
 
     companion object {
         const val CHANNEL_ID = "covid channel id"
@@ -29,6 +32,7 @@ class BaseApp : Application() {
         super.onCreate()
         createNotificationChannel()
         showNotificationByWorker()
+        checkDayNightMode()
     }
 
     @RequiresApi(M)
@@ -58,5 +62,13 @@ class BaseApp : Application() {
             periodicWorkRequest
         )
 
+    }
+
+    private fun checkDayNightMode() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if (preferences.getBoolean(nightMode, false)) AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_YES
+        )
+        else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 }
