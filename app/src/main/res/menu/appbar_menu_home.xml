@@ -2,12 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/appbar_home_refresh"
+    <item
+        android:id="@+id/appbar_home_refresh"
         android:title="@string/appbar_refresh"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
-    <item android:id="@+id/appbar_home_about"
+    <item
+        android:id="@+id/appbar_settings"
+        android:title="@string/settings" />
+
+    <item
+        android:id="@+id/appbar_home_about"
         android:title="@string/appbar_about"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
 </menu>

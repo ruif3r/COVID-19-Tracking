@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#424242</color>
-    <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#6200EE</color>
-    <color name="recoveredColor">#4CAF50</color>
-    <color name="deathsColor">#B71C1C</color>
-    <color name="criticalColor">#FF9800</color>
-    <color name="graphTextColor">#9E9E9E</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3d00e0</color>
+    <color name="colorAccent">#ee0290</color>
+    <color name="recoveredColor">#61d800</color>
+    <color name="deathsColor">#ee0290</color>
+    <color name="criticalColor">#ee6002</color>
+    <color name="textColor">#9E9E9E</color>
+    <color name="totalCasesChartColor">#6200EE</color>
+    <color name="backgroundColor">#FFFFFF</color>
 </resources>
