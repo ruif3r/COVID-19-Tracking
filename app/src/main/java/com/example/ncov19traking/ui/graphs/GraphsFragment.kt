@@ -72,7 +72,7 @@ class GraphsFragment : Fragment() {
             val allLineData = ArrayList<ILineDataSet>()
             allLineData.insertChartDataSet(
                 nCovTimeline.cases,
-                R.string.total_recovered,
+                R.string.global_cases_string,
                 R.color.totalCasesChartColor
             )
             allLineData.insertChartDataSet(
@@ -117,6 +117,8 @@ class GraphsFragment : Fragment() {
         chart.apply {
             animateX(2000)
             description.text = getString(R.string.global_graph_description)
+            description.textColor = textColor
+            legend.textColor = textColor
             axisRight.isEnabled = false
             axisLeft.textColor = textColor
             xAxis.textColor = textColor

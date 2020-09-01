@@ -12,123 +12,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        tools:context=".ui.global.GlobalFragment">
+        tools:context=".ui.global.GlobalFragment"
+        android:animateLayoutChanges="true">
 
-        <TextView
-            android:id="@+id/total_cases"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textSize="@dimen/home_text_size"
-            tools:text="1244352"
-            app:layout_constraintBottom_toTopOf="@+id/recovered_numbers"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/total_cases_title"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/circular_chart"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/recovered_numbers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/recoveredColor"
-            android:textSize="@dimen/home_text_size"
-            tools:text="342352"
-            app:layout_constraintBottom_toTopOf="@+id/deaths_numbers"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/recovered2"
-            app:layout_constraintTop_toBottomOf="@+id/total_cases" />
-
-        <TextView
-            android:id="@+id/deaths_numbers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/deathsColor"
-            android:textSize="@dimen/home_text_size"
-            tools:text="2435324"
-            app:layout_constraintBottom_toTopOf="@+id/last_update_date"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/deaths_cases_title"
-            app:layout_constraintTop_toBottomOf="@+id/recovered_numbers" />
 
         <TextView
             android:id="@+id/last_update_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="?attr/actionBarSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/last_update"
-            app:layout_constraintTop_toBottomOf="@+id/deaths_numbers" />
+            tools:text="Date" />
 
         <TextView
             android:id="@+id/last_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="?attr/actionBarSize"
             android:text="@string/last_update_date"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/last_update_date"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/deaths_cases_title" />
-
-        <TextView
-            android:id="@+id/recovered2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/recovered_title"
-            android:textSize="@dimen/home_text_size"
-            android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/deaths_cases_title"
-            app:layout_constraintEnd_toStartOf="@+id/recovered_numbers"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/total_cases_title" />
-
-        <TextView
-            android:id="@+id/deaths_cases_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/deaths_title"
-            android:textSize="@dimen/home_text_size"
-            android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/last_update"
-            app:layout_constraintEnd_toStartOf="@+id/deaths_numbers"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recovered2" />
-
-        <TextView
-            android:id="@+id/total_cases_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/total_cases_title"
-            android:textSize="@dimen/home_text_size"
-            android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/recovered2"
-            app:layout_constraintEnd_toStartOf="@+id/total_cases"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Global"
+            android:text="@string/global"
             android:textSize="20sp"
             android:textColor="?android:attr/textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -145,31 +66,158 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/title" />
 
-        <TextView
-            android:id="@+id/percentageCasesDifference"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/total_cases"
-            app:layout_constraintStart_toStartOf="@+id/total_cases"
-            app:layout_constraintTop_toBottomOf="@+id/total_cases" />
 
-        <TextView
-            android:id="@+id/percentageRecoveredDifference"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/recovered_numbers"
-            app:layout_constraintStart_toStartOf="@+id/recovered_numbers"
-            app:layout_constraintTop_toBottomOf="@+id/recovered_numbers" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="@dimen/cards_width"
+            android:layout_height="@dimen/cards_height"
+            android:layout_marginTop="@dimen/cards_margin_parent_top"
+            android:layout_marginEnd="@dimen/cards_margin_parent_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/percentageDeathsDifference"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/deaths_numbers"
-            app:layout_constraintStart_toStartOf="@+id/deaths_numbers"
-            app:layout_constraintTop_toBottomOf="@+id/deaths_numbers" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/total_cases_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_card_padding"
+                    android:text="@string/total_cases_title"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/home_text_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/total_cases"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/cases_numbers_size"
+                    app:layout_constraintBottom_toTopOf="@+id/percentageCasesDifference"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="1244352" />
+
+                <TextView
+                    android:id="@+id/percentageCasesDifference"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/increase_percentage_text_size"
+                    android:layout_marginBottom="@dimen/text_card_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="@string/percentage_example" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView2"
+            android:layout_width="@dimen/cards_width"
+            android:layout_height="@dimen/cards_height"
+            android:layout_marginTop="@dimen/cards_margin_parent_top"
+            android:layout_marginEnd="@dimen/cards_margin_parent_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/recovered2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_card_padding"
+                    android:text="@string/recovered_title"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/home_text_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/recovered_numbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/recoveredColor"
+                    android:textSize="@dimen/cases_numbers_size"
+                    app:layout_constraintBottom_toTopOf="@+id/percentageRecoveredDifference"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="342352" />
+
+                <TextView
+                    android:id="@+id/percentageRecoveredDifference"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/increase_percentage_text_size"
+                    android:layout_marginBottom="@dimen/text_card_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="@string/percentage_example" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/cards_width"
+            android:layout_height="@dimen/cards_height"
+            android:layout_marginTop="@dimen/cards_margin_parent_top"
+            android:layout_marginEnd="@dimen/cards_margin_parent_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/deaths_cases_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_card_padding"
+                    android:text="@string/deaths_title"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/home_text_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/deaths_numbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/deathsColor"
+                    android:textSize="@dimen/cases_numbers_size"
+                    app:layout_constraintBottom_toTopOf="@+id/percentageDeathsDifference"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="2435324" />
+
+                <TextView
+                    android:id="@+id/percentageDeathsDifference"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/increase_percentage_text_size"
+                    android:layout_marginBottom="@dimen/text_card_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="@string/percentage_example" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

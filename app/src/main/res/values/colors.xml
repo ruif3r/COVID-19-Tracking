@@ -6,7 +6,7 @@
     <color name="recoveredColor">#61d800</color>
     <color name="deathsColor">#ee0290</color>
     <color name="criticalColor">#ee6002</color>
-    <color name="textColor">#9E9E9E</color>
+    <color name="textColor">#737373</color>
     <color name="totalCasesChartColor">#6200EE</color>
     <color name="backgroundColor">#FFFFFF</color>
 </resources>
