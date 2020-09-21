@@ -37,7 +37,7 @@ class GraphsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_notifications, container, false)
+        return inflater.inflate(R.layout.fragment_graphs, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
