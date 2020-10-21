@@ -2,6 +2,24 @@
 
 An Android app that follows COVID infections numbers, deaths, recoveries, etc. And create graphs with that data.
 
+If you are learning Android with Kotlin, here you will find an understandable yet complex app that use and you can learn the following:
+
+- MVVM Architecture
+- Retrofit
+- RecyclerView
+- Compound View
+- Material Design
+- Constraint Layout
+- Room
+- WorkManger
+- ViewModel
+- LiveData
+- Charts (MPAndroidCharts)
+- Picasso
+- Dagger 2
+- Night Mode
+
+
 ## Source
 
 This app use the COVID API https://github.com/novelcovid/api which retrieve data from:
