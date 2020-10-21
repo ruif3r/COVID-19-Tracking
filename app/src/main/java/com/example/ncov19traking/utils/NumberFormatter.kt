@@ -2,9 +2,11 @@ package com.example.ncov19traking.utils
 
 import java.text.DecimalFormat
 
-class NumberFormatter
+object NumberFormatter {
 
-fun formatLargeNumbers(value: Int): String {
-    val df = DecimalFormat("###,###,###")
-    return df.format(value)
+    fun Int.formatLargeNumbers(): String {
+        val df = DecimalFormat("###,###,###")
+        return df.format(this)
+    }
 }
+

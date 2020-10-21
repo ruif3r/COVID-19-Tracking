@@ -1,7 +1,6 @@
 package com.example.ncov19traking.ui
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -9,11 +8,8 @@ import androidx.core.content.ContextCompat
 import com.example.ncov19traking.R
 import com.google.android.material.card.MaterialCardView
 
-const val DEFAULT_TITLE_TEXT = "Title"
-const val DEFAULT_NUMBER_TEXT = "0"
-const val DEFAULT_PERCENTAGE_TEXT = "0%"
-const val CARD_ELEVATION = 10F
-const val CARD_RADIUS = 16F
+private const val DEFAULT_NUMBER_TEXT = "0"
+private const val DEFAULT_PERCENTAGE_TEXT = "0%"
 
 class CovidCustomCard @JvmOverloads constructor(
     context: Context,
@@ -21,56 +17,72 @@ class CovidCustomCard @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
-    private var titleText = DEFAULT_TITLE_TEXT
+    private val defaultTitleText = resources.getString(R.string.custom_covid_card_default_title)
+    private var titleText = defaultTitleText
     private var numberText = DEFAULT_NUMBER_TEXT
     private var percentageText = DEFAULT_PERCENTAGE_TEXT
     private var numberTextColor = resources.getColor(R.color.recoveredColor)
     private var percentageTextColor = resources.getColor(R.color.textColor)
-    private lateinit var titleTextView : TextView
-    private lateinit var numbersTextView : TextView
-    private lateinit var percentageTextView : TextView
+    private var titleTextView: TextView? = null
+    private var numbersTextView: TextView? = null
+    private var percentageTextView: TextView? = null
 
     init {
-        setupCard()
-        context.theme.obtainStyledAttributes(attrs, R.styleable.CovidCustomCard, defStyleAttr, 0).apply {
-            try {
+        receivingAttributes(context, attrs, defStyleAttr)
+        inflateView(context)
+        initializeView()
+    }
 
-                titleText = getString(R.styleable.CovidCustomCard_titleText) ?: DEFAULT_TITLE_TEXT
-                numberText = getString(R.styleable.CovidCustomCard_caseNumberText) ?: DEFAULT_NUMBER_TEXT
-                percentageText = getString(R.styleable.CovidCustomCard_percentageText) ?: DEFAULT_PERCENTAGE_TEXT
-                numberTextColor = getColor(R.styleable.CovidCustomCard_caseNumberTextColor, numberTextColor)
-                percentageTextColor = getColor(R.styleable.CovidCustomCard_percentageTextColor, percentageTextColor)
+    private fun receivingAttributes(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
+    ) {
+        context.theme.obtainStyledAttributes(attrs, R.styleable.CovidCustomCard, defStyleAttr, 0)
+            .apply {
+                try {
 
-            } finally {
-                recycle()
+                    titleText =
+                        getString(R.styleable.CovidCustomCard_titleText) ?: defaultTitleText
+                    numberText =
+                        getString(R.styleable.CovidCustomCard_caseNumberText) ?: DEFAULT_NUMBER_TEXT
+                    percentageText = getString(R.styleable.CovidCustomCard_percentageText)
+                        ?: DEFAULT_PERCENTAGE_TEXT
+                    numberTextColor =
+                        getColor(R.styleable.CovidCustomCard_caseNumberTextColor, numberTextColor)
+                    percentageTextColor = getColor(
+                        R.styleable.CovidCustomCard_percentageTextColor,
+                        percentageTextColor
+                    )
+
+                } finally {
+                    recycle()
+                }
             }
-
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.covid_custom_card, this@CovidCustomCard)
-        }
     }
 
-    fun setTitleText(newTitle : String){
-        titleTextView.text = newTitle
+    private fun inflateView(context: Context) {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        inflater.inflate(R.layout.covid_custom_card, this@CovidCustomCard)
     }
 
-    fun setCaseNumbers(cases : String){
-        numbersTextView.text = cases
+    fun setTitleText(newTitle: String) {
+        titleTextView?.text = newTitle
     }
 
-    fun setPercentageText(newPercentageText : String){
-        percentageTextView.text = newPercentageText
+    fun setCaseNumbers(cases: String) {
+        numbersTextView?.text = cases
     }
 
-    private fun setupCard(){
+    fun setPercentageText(newPercentageText: String) {
+        percentageTextView?.text = newPercentageText
+    }
+
+    private fun initializeView() {
         setCardBackgroundColor(ContextCompat.getColor(context, R.color.backgroundColor))
-        cardElevation = CARD_ELEVATION
-        radius = CARD_RADIUS
-    }
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-
+        cardElevation = resources.getDimension(R.dimen.custom_covid_card_elevation)
+        radius = resources.getDimension(R.dimen.custom_covid_card_radius)
+        isClickable = true
         titleTextView = findViewById<TextView>(R.id.custom_card_title).apply {
             text = titleText
         }

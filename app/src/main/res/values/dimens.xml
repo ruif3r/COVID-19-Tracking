@@ -15,4 +15,6 @@
     <dimen name="cards_margin_bottom_from_parent">35dp</dimen>
     <dimen name="pie_chart_size">150dp</dimen>
     <dimen name="title_size">20sp</dimen>
+    <dimen name="custom_covid_card_elevation">4dp</dimen>
+    <dimen name="custom_covid_card_radius">10dp</dimen>
 </resources>

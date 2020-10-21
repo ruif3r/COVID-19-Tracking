@@ -14,12 +14,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.BaseApp
-import com.example.ncov19traking.PieChartBuilder
+import com.example.ncov19traking.PieChartConfigHelper
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
+import com.example.ncov19traking.models.NCoVInfo
 import com.example.ncov19traking.ui.CovidCustomCard
 import com.example.ncov19traking.ui.settings.SettingsActivity
-import com.example.ncov19traking.utils.formatLargeNumbers
+import com.example.ncov19traking.utils.NumberFormatter.formatLargeNumbers
+import com.github.mikephil.charting.charts.PieChart
 import java.util.*
 import javax.inject.Inject
 
@@ -40,7 +42,7 @@ class GlobalFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalFragmentViewHolder().progressBar.isVisible = true
-        GlobalFragmentViewHolder().pieChart.setVisibility(false)
+        GlobalFragmentViewHolder().pieChart.isVisible = false
         setupObserverSubscription()
     }
 
@@ -65,39 +67,18 @@ class GlobalFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
+    }
+
     private fun setupObserverSubscription() {
         homeViewModel.nCoVAllCases.observe(viewLifecycleOwner, Observer {
             with(GlobalFragmentViewHolder()) {
-                covidTotalCasesCard.setCaseNumbers(formatLargeNumbers(it.cases))
-                covidRecoveredCard.setCaseNumbers(formatLargeNumbers(it.recovered))
-                covidDeathsCard.setCaseNumbers(formatLargeNumbers(it.deaths))
+                setCovidDataToCards(it)
+                receivingPercentageTextToCards(it)
+                makePieChartVisibleWhenDataReceived(it)
                 lastUpdateLong.text = Date(it.updated).toString()
-                covidTotalCasesCard.setPercentageText(
-                    getString(
-                        R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                            it.cases,
-                            homeViewModel.nCoVYesterdayAllCases.cases
-                        )
-                    )
-                )
-                covidRecoveredCard.setPercentageText(
-                    getString(
-                        R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                            it.recovered,
-                            homeViewModel.nCoVYesterdayAllCases.recovered
-                        )
-                    )
-                )
-                covidDeathsCard.setPercentageText(
-                    getString(
-                        R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                            it.deaths,
-                            homeViewModel.nCoVYesterdayAllCases.deaths
-                        )
-                    )
-                )
-                pieChart.getChartData(it)
-                pieChart.setVisibility(true)
                 progressBar.isVisible = false
             }
         })
@@ -106,9 +87,54 @@ class GlobalFragment : Fragment() {
         })
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
+    private fun GlobalFragmentViewHolder.receivingPercentageTextToCards(
+        nCoVInfo: NCoVInfo
+    ) {
+        covidTotalCasesCard.setPercentageText(
+            getString(
+                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                    nCoVInfo.cases,
+                    homeViewModel.nCoVYesterdayAllCases.cases
+                )
+            )
+        )
+        covidRecoveredCard.setPercentageText(
+            getString(
+                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                    nCoVInfo.recovered,
+                    homeViewModel.nCoVYesterdayAllCases.recovered
+                )
+            )
+        )
+        covidDeathsCard.setPercentageText(
+            getString(
+                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                    nCoVInfo.deaths,
+                    homeViewModel.nCoVYesterdayAllCases.deaths
+                )
+            )
+        )
+    }
+
+    private fun GlobalFragmentViewHolder.setCovidDataToCards(
+        nCoVInfo: NCoVInfo
+    ) {
+        covidTotalCasesCard.setCaseNumbers(nCoVInfo.cases.formatLargeNumbers())
+        covidRecoveredCard.setCaseNumbers(nCoVInfo.recovered.formatLargeNumbers())
+        covidDeathsCard.setCaseNumbers(nCoVInfo.deaths.formatLargeNumbers())
+    }
+
+    private fun GlobalFragmentViewHolder.makePieChartVisibleWhenDataReceived(
+        nCoVInfo: NCoVInfo
+    ) {
+        PieChartConfigHelper.setAndConfigChartData(
+            nCoVInfo,
+            pieChart,
+            resources.getColor(R.color.textColor),
+            resources.getColor(R.color.recoveredColor),
+            resources.getColor(R.color.deathsColor)
+        )
+        pieChart.isVisible = true
     }
 
 
@@ -122,7 +148,8 @@ class GlobalFragment : Fragment() {
         val covidRecoveredCard: CovidCustomCard = view.findViewById(R.id.covid_recovered_cases_card)
         val covidDeathsCard: CovidCustomCard = view.findViewById(R.id.covid_deaths_cases_card)
         val lastUpdateLong: TextView = view.findViewById(R.id.last_update_date)
-        val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
-        val pieChart = PieChartBuilder(view.findViewById(R.id.circular_chart))
+        val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
+        val pieChart = view.findViewById<PieChart>(R.id.circular_chart)
+            .apply { PieChartConfigHelper.setupPieChart(this) }
     }
 }
