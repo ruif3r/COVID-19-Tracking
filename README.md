@@ -6,6 +6,8 @@ If you are learning Android with Kotlin, here you will find an understandable ye
 
 - MVVM Architecture
 - Retrofit
+- Kotlin Coroutines
+- Navigation Components
 - RecyclerView
 - Compound View
 - Material Design
