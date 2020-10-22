@@ -42,6 +42,7 @@ class GlobalFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalFragmentViewHolder().progressBar.isVisible = true
+        PieChartConfigHelper.setupPieChart(GlobalFragmentViewHolder().pieChart)
         GlobalFragmentViewHolder().pieChart.isVisible = false
         setupObserverSubscription()
     }
@@ -75,8 +76,8 @@ class GlobalFragment : Fragment() {
     private fun setupObserverSubscription() {
         homeViewModel.nCoVAllCases.observe(viewLifecycleOwner, Observer {
             with(GlobalFragmentViewHolder()) {
-                setCovidDataToCards(it)
-                receivingPercentageTextToCards(it)
+                setCovidCaseNumbersToCards(it)
+                receivePercentageTextToCards(it)
                 makePieChartVisibleWhenDataReceived(it)
                 lastUpdateLong.text = Date(it.updated).toString()
                 progressBar.isVisible = false
@@ -87,7 +88,7 @@ class GlobalFragment : Fragment() {
         })
     }
 
-    private fun GlobalFragmentViewHolder.receivingPercentageTextToCards(
+    private fun GlobalFragmentViewHolder.receivePercentageTextToCards(
         nCoVInfo: NCoVInfo
     ) {
         covidTotalCasesCard.setPercentageText(
@@ -116,7 +117,7 @@ class GlobalFragment : Fragment() {
         )
     }
 
-    private fun GlobalFragmentViewHolder.setCovidDataToCards(
+    private fun GlobalFragmentViewHolder.setCovidCaseNumbersToCards(
         nCoVInfo: NCoVInfo
     ) {
         covidTotalCasesCard.setCaseNumbers(nCoVInfo.cases.formatLargeNumbers())
@@ -150,6 +151,5 @@ class GlobalFragment : Fragment() {
         val lastUpdateLong: TextView = view.findViewById(R.id.last_update_date)
         val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         val pieChart = view.findViewById<PieChart>(R.id.circular_chart)
-            .apply { PieChartConfigHelper.setupPieChart(this) }
     }
 }

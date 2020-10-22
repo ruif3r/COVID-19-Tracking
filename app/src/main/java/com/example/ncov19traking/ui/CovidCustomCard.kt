@@ -28,12 +28,24 @@ class CovidCustomCard @JvmOverloads constructor(
     private var percentageTextView: TextView? = null
 
     init {
-        receivingAttributes(context, attrs, defStyleAttr)
+        receiveAttributes(context, attrs, defStyleAttr)
         inflateView(context)
         initializeView()
     }
 
-    private fun receivingAttributes(
+    fun setTitleText(newTitle: String) {
+        titleTextView?.text = newTitle
+    }
+
+    fun setCaseNumbers(cases: String) {
+        numbersTextView?.text = cases
+    }
+
+    fun setPercentageText(newPercentageText: String) {
+        percentageTextView?.text = newPercentageText
+    }
+
+    private fun receiveAttributes(
         context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int
@@ -64,18 +76,6 @@ class CovidCustomCard @JvmOverloads constructor(
     private fun inflateView(context: Context) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         inflater.inflate(R.layout.covid_custom_card, this@CovidCustomCard)
-    }
-
-    fun setTitleText(newTitle: String) {
-        titleTextView?.text = newTitle
-    }
-
-    fun setCaseNumbers(cases: String) {
-        numbersTextView?.text = cases
-    }
-
-    fun setPercentageText(newPercentageText: String) {
-        percentageTextView?.text = newPercentageText
     }
 
     private fun initializeView() {

@@ -21,10 +21,11 @@ object PieChartConfigHelper {
     }
 
     fun setAndConfigChartData(nCoVInfo: NCoVInfo, pieChart: PieChart, vararg colorList: Int) {
-        val pieEntry = ArrayList<PieEntry>()
-        pieEntry.add(PieEntry((nCoVInfo.cases - nCoVInfo.recovered - nCoVInfo.deaths).toFloat()))
-        pieEntry.add(PieEntry(nCoVInfo.recovered.toFloat()))
-        pieEntry.add(PieEntry(nCoVInfo.deaths.toFloat()))
+        val pieEntry = ArrayList<PieEntry>().apply {
+            add(PieEntry((nCoVInfo.cases - nCoVInfo.recovered - nCoVInfo.deaths).toFloat()))
+            add(PieEntry(nCoVInfo.recovered.toFloat()))
+            add(PieEntry(nCoVInfo.deaths.toFloat()))
+        }
         pieChart.data = PieData(
             PieDataSet(
                 pieEntry,
