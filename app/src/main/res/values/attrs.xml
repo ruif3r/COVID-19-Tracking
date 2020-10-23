@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CovidCustomCard">
+        <attr name="titleText" format="string"/>
+        <attr name="caseNumberText" format="string"/>
+        <attr name="caseNumberTextColor" format="color"/>
+        <attr name="percentageText" format="string"/>
+        <attr name="percentageTextColor" format="color"/>
+    </declare-styleable>
+</resources>

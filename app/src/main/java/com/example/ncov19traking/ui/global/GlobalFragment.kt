@@ -14,9 +14,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.ncov19traking.AlertDialogBuilder
 import com.example.ncov19traking.BaseApp
+import com.example.ncov19traking.PieChartConfigHelper
 import com.example.ncov19traking.R
 import com.example.ncov19traking.models.ErrorBody
+import com.example.ncov19traking.models.NCoVInfo
+import com.example.ncov19traking.ui.CovidCustomCard
 import com.example.ncov19traking.ui.settings.SettingsActivity
+import com.example.ncov19traking.utils.NumberFormatter.formatLargeNumbers
+import com.github.mikephil.charting.charts.PieChart
 import java.util.*
 import javax.inject.Inject
 
@@ -32,11 +37,13 @@ class GlobalFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_global, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalFragmentViewHolder().progressBar.isVisible = true
+        PieChartConfigHelper.setupPieChart(GlobalFragmentViewHolder().pieChart)
+        GlobalFragmentViewHolder().pieChart.isVisible = false
         setupObserverSubscription()
     }
 
@@ -61,31 +68,18 @@ class GlobalFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
+    }
+
     private fun setupObserverSubscription() {
         homeViewModel.nCoVAllCases.observe(viewLifecycleOwner, Observer {
             with(GlobalFragmentViewHolder()) {
-                totalCases.text = it.cases.toString()
-                recovered.text = it.recovered.toString()
-                deaths.text = it.deaths.toString()
+                setCovidCaseNumbersToCards(it)
+                receivePercentageTextToCards(it)
+                makePieChartVisibleWhenDataReceived(it)
                 lastUpdateLong.text = Date(it.updated).toString()
-                casesPercentage.text = getString(
-                    R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                        it.cases,
-                        homeViewModel.nCoVYesterdayAllCases.cases
-                    )
-                )
-                recoveredPercentage.text = getString(
-                    R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                        it.recovered,
-                        homeViewModel.nCoVYesterdayAllCases.recovered
-                    )
-                )
-                deathsPercentage.text = getString(
-                    R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
-                        it.deaths,
-                        homeViewModel.nCoVYesterdayAllCases.deaths
-                    )
-                )
                 progressBar.isVisible = false
             }
         })
@@ -94,9 +88,54 @@ class GlobalFragment : Fragment() {
         })
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().applicationContext as BaseApp).applicationComponent.inject(this)
+    private fun GlobalFragmentViewHolder.receivePercentageTextToCards(
+        nCoVInfo: NCoVInfo
+    ) {
+        covidTotalCasesCard.setPercentageText(
+            getString(
+                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                    nCoVInfo.cases,
+                    homeViewModel.nCoVYesterdayAllCases.cases
+                )
+            )
+        )
+        covidRecoveredCard.setPercentageText(
+            getString(
+                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                    nCoVInfo.recovered,
+                    homeViewModel.nCoVYesterdayAllCases.recovered
+                )
+            )
+        )
+        covidDeathsCard.setPercentageText(
+            getString(
+                R.string.since_yesterday, homeViewModel.getCasesPercentageDifference(
+                    nCoVInfo.deaths,
+                    homeViewModel.nCoVYesterdayAllCases.deaths
+                )
+            )
+        )
+    }
+
+    private fun GlobalFragmentViewHolder.setCovidCaseNumbersToCards(
+        nCoVInfo: NCoVInfo
+    ) {
+        covidTotalCasesCard.setCaseNumbers(nCoVInfo.cases.formatLargeNumbers())
+        covidRecoveredCard.setCaseNumbers(nCoVInfo.recovered.formatLargeNumbers())
+        covidDeathsCard.setCaseNumbers(nCoVInfo.deaths.formatLargeNumbers())
+    }
+
+    private fun GlobalFragmentViewHolder.makePieChartVisibleWhenDataReceived(
+        nCoVInfo: NCoVInfo
+    ) {
+        PieChartConfigHelper.setAndConfigChartData(
+            nCoVInfo,
+            pieChart,
+            resources.getColor(R.color.textColor),
+            resources.getColor(R.color.recoveredColor),
+            resources.getColor(R.color.deathsColor)
+        )
+        pieChart.isVisible = true
     }
 
 
@@ -106,13 +145,11 @@ class GlobalFragment : Fragment() {
 
     inner class GlobalFragmentViewHolder {
         private val view = requireView()
-        val totalCases: TextView = view.findViewById(R.id.total_cases)
-        val recovered: TextView = view.findViewById(R.id.recovered_numbers)
-        val deaths: TextView = view.findViewById(R.id.deaths_numbers)
-        val casesPercentage: TextView = view.findViewById(R.id.percentageCasesDifference)
-        val recoveredPercentage: TextView = view.findViewById(R.id.percentageRecoveredDifference)
-        val deathsPercentage: TextView = view.findViewById(R.id.percentageDeathsDifference)
+        val covidTotalCasesCard: CovidCustomCard = view.findViewById(R.id.covid_total_cases_card)
+        val covidRecoveredCard: CovidCustomCard = view.findViewById(R.id.covid_recovered_cases_card)
+        val covidDeathsCard: CovidCustomCard = view.findViewById(R.id.covid_deaths_cases_card)
         val lastUpdateLong: TextView = view.findViewById(R.id.last_update_date)
-        val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+        val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
+        val pieChart = view.findViewById<PieChart>(R.id.circular_chart)
     }
 }

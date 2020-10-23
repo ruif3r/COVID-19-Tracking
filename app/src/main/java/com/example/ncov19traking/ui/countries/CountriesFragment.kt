@@ -34,7 +34,7 @@ class CountriesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+        return inflater.inflate(R.layout.fragment_countries, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
