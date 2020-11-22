@@ -25,5 +25,4 @@ interface ApplicationComponent {
     interface factory {
         fun create(@BindsInstance context: Context): ApplicationComponent
     }
-
 }
