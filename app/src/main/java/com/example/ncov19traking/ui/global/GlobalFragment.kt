@@ -36,6 +36,7 @@ class GlobalFragment : Fragment() {
     ): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_global, container, false)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
